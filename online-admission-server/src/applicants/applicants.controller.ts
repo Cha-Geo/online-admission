@@ -6,12 +6,12 @@ import {
   Patch,
   Param,
   Delete,
-} from "@nestjs/common";
-import { ApplicantsService } from "./applicants.service";
-import { CreateApplicantDto } from "./dto/create-applicant.dto";
-import { UpdateApplicantDto } from "./dto/update-applicant.dto";
+} from '@nestjs/common';
+import { ApplicantsService } from './applicants.service';
+import { CreateApplicantDto } from './dto/create-applicant.dto';
+import { UpdateApplicantDto } from './dto/update-applicant.dto';
 
-@Controller("applicants")
+@Controller('applicants')
 export class ApplicantsController {
   constructor(private readonly applicantsService: ApplicantsService) {}
 
@@ -25,21 +25,21 @@ export class ApplicantsController {
     return this.applicantsService.findAll();
   }
 
-  @Get(":id")
-  findOne(@Param("id") id: string) {
+  @Get(':id')
+  findOne(@Param('id') id: string) {
     return this.applicantsService.findOne(+id);
   }
 
-  @Patch(":id")
+  @Patch(':id')
   update(
-    @Param("id") id: string,
-    @Body() updateApplicantDto: UpdateApplicantDto
+    @Param('id') id: string,
+    @Body() updateApplicantDto: UpdateApplicantDto,
   ) {
     return this.applicantsService.update(+id, updateApplicantDto);
   }
 
-  @Delete(":id")
-  remove(@Param("id") id: string) {
+  @Delete(':id')
+  remove(@Param('id') id: string) {
     return this.applicantsService.remove(+id);
   }
 }

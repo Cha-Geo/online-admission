@@ -6,12 +6,12 @@ import {
   Patch,
   Param,
   Delete,
-} from "@nestjs/common";
-import { ProgrammesService } from "./programmes.service";
-import { CreateProgrammeDto } from "./dto/create-programme.dto";
-import { UpdateProgrammeDto } from "./dto/update-programme.dto";
+} from '@nestjs/common';
+import { ProgrammesService } from './programmes.service';
+import { CreateProgrammeDto } from './dto/create-programme.dto';
+import { UpdateProgrammeDto } from './dto/update-programme.dto';
 
-@Controller("programmes")
+@Controller('programmes')
 export class ProgrammesController {
   constructor(private readonly programmesService: ProgrammesService) {}
 
@@ -25,21 +25,21 @@ export class ProgrammesController {
     return this.programmesService.findAll();
   }
 
-  @Get(":id")
-  findOne(@Param("id") id: string) {
+  @Get(':id')
+  findOne(@Param('id') id: string) {
     return this.programmesService.findOne(+id);
   }
 
-  @Patch(":id")
+  @Patch(':id')
   update(
-    @Param("id") id: string,
-    @Body() updateProgrammeDto: UpdateProgrammeDto
+    @Param('id') id: string,
+    @Body() updateProgrammeDto: UpdateProgrammeDto,
   ) {
     return this.programmesService.update(+id, updateProgrammeDto);
   }
 
-  @Delete(":id")
-  remove(@Param("id") id: string) {
+  @Delete(':id')
+  remove(@Param('id') id: string) {
     return this.programmesService.remove(+id);
   }
 }

@@ -1,26 +1,35 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { sign } from 'jsonwebtoken';
+import { Payload } from 'src/shared/interfaces/jwt.payload';
+import { Session } from 'src/shared/interfaces/session';
+import { Applicant } from 'src/shared/interfaces/applicant';
+import { ApplicantsService } from 'src/applicants/applicants.service';
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(private applicantService: ApplicantsService) {}
+  async signPayload(payload: Payload) {
+    return sign(payload, process.env.SECRET_KEY, { expiresIn: '1d' });
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  async validateUser(payload: Payload) {
+    return await this.applicantService.findByPayload(payload);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
+  async login(user: Applicant, session: Session): Promise<any> {
+    const payload = {
+      email: user.email,
+    };
+    console.log('email: ', payload.email);
+    const authToken = await this.signPayload(payload);
+    console.warn('auth', authToken);
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
+    session.user = user; // Store user information in the session
+    session.authToken = authToken; // Store the JWT in the session
 
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+    return {
+      authToken: authToken,
+      user: user,
+    };
   }
 }

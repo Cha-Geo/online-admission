@@ -1,3 +1,20 @@
+// CONTEXTS
+interface IOpenCloseContext {
+  isOpen: boolean;
+  setIsOpen: (show: boolean) => void;
+  navbarShow: boolean;
+  setNavbarShow: (show: boolean) => void;
+  handleNavbarShow: () => void;
+  setClose: () => void;
+  setOpen: () => void;
+  handleOpenClose: () => void;
+  isMobile: boolean;
+  setIsMobile: (show: boolean) => void;
+}
+
+//END CONTEXTS
+
+
 // NAVIGATIONS
 interface ISidebarMenu {
   path: string;

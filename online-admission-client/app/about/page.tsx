@@ -1,20 +1,18 @@
 "use client"
 
 import Sections from "@/components/ui/Sections";
-import { programsSectionData } from "@/public/data/sectionData";
+import { aboutSectionData } from "@/public/data/sectionData";
 import useScrollToSectionId from "@/public/lib/hooks/use-get-section-id";
 
-type Props = {}
 
-const Programs = (props: Props) => {
-  
+const About = () => {
   useScrollToSectionId();
-
+  
   return (
     <div className="space-y-10">
-      <Sections sectionData={programsSectionData} />
+      <Sections sectionData={aboutSectionData} />
     </div>
   );
-}
+};
 
-export default Programs;
+export default About;

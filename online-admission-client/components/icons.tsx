@@ -159,14 +159,17 @@ function IconArrowDown({ className, ...props }: React.ComponentProps<'svg'>) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 256 256"
-      fill="currentColor"
-      className={cn('h-4 w-4', className)}
+      clipRule="evenodd"
+      fillRule="evenodd"
+      strokeLinejoin="round"
+      strokeMiterlimit="2"
+      viewBox="0 0 24 24"
+      className={cn("h-2 w-2", className)}
       {...props}
     >
-      <path d="m205.66 149.66-72 72a8 8 0 0 1-11.32 0l-72-72a8 8 0 0 1 11.32-11.32L120 196.69V40a8 8 0 0 1 16 0v156.69l58.34-58.35a8 8 0 0 1 11.32 11.32Z" />
+      <path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path>
     </svg>
-  )
+  );
 }
 
 function IconArrowUp({ className, ...props }: React.ComponentProps<'svg'>) {

@@ -80,11 +80,11 @@ const Navbar = () => {
                 )}
               </div>
               {!mobileMenuOpen && openDropdown === item.name && item.data && (
-                <div className="py-2 px-2 transition-all duration-500 font-semibold dropdown custom-dropdown">
+                <div className="py-2 px-2 transition-all duration-500 font-semibold dropdown custom-dropdown glassmorphism">
                   {item.data.map((data, j) => (
                     <Link
                       key={j}
-                      className="px-4 py-2   gap-5 text-gray-900 hover:bg-gray-50 leading-7 rounded-lg text-base text-start w-full "
+                      className="px-4 py-2   gap-5 text-gray-900 hover:bg-gray-200 hover:bg-opacity-50 leading-7 rounded-lg text-base text-start w-full "
                       href={`${item.path}?section=${data.id as string}`}
                       onClick={() => setMobileMenuOpen(false)}
                     >

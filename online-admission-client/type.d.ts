@@ -30,6 +30,16 @@ interface ISubSidebarMenu {
   icon: IconType;
 }
 
+interface IFooterItems {
+  name: string;
+  data: IFooterData[];
+}
+
+interface IFooterData {
+  name: string;
+  path: string;
+}
+
 // END OF NAVIGATIONS
 
 

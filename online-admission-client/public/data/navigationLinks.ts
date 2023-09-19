@@ -1,5 +1,6 @@
 import { IconArrowElbow, IconCheck, IconDownload, IconEdit, IconExternalLink, IconHome, IconNextChat, IconRefresh } from "@/components/icons";
 
+//NAVBAR LINKS
 export const aboutData: ISubSidebarMenu[] = [
   {
     path: "about/about-dl",
@@ -150,3 +151,82 @@ export const navigationItems: ISidebarMenu[] = [
     icon: IconArrowElbow,
   },
 ];
+
+
+// END NAVBAR LINKS
+
+
+//FOOTER LINKS
+
+const officeData: IFooterData[] = [
+  {
+    name: "KS 18426, ADUM, KUMASI",
+    path: "/contact?section=location",
+  },
+  {
+    name: "GPRS AG-0867-9765",
+    path: "/contact?section=location",
+  },
+  {
+    name: "Send a mail",
+    path: "admin@auc.edu.gh",
+  },
+  {
+    name: "0559141626 | 0559220960 | 020117770",
+    path: "/contact?section=call",
+  },
+];
+
+const quickiesData: IFooterData[] = [
+  {
+    name: "Home",
+    path: "/",
+  },
+  {
+    name: "Who We Are",
+    path: "/about?section=about-dl",
+  },
+  {
+    name: "Our Philosophy",
+    path: "/about?section=objectives",
+  },
+];
+
+const coursesData: IFooterData[] = [
+  {
+    path: "programs?section=diploma-theology",
+    name: "Diploma In Theory (Part-Time)",
+  },
+  {
+    path: "programs?section=diploma-theology",
+    name: "Diploma In Theory (Distance Online)",
+  },
+  {
+    path: "programs?section=diploma-theology",
+    name: "Diploma In Theory (Sandwich)",
+  },
+  {
+    path: "programs?section=certificate-theology",
+    name: "Certicate In Theology",
+  },
+  {
+    path: "programs?section=executive-theology",
+    name: "Executive Course In Theology",
+  },
+];
+
+export const footerLinks: IFooterItems[] = [
+  {
+    name: "Quick Links",
+    data: quickiesData,
+  },
+  {
+    name: "Head Office",
+    data: officeData,
+  },
+  {
+    name: "Programs",
+    data: coursesData,
+  },
+];
+

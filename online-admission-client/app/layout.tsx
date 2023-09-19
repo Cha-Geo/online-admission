@@ -33,7 +33,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
               <Navbar />
             </div>
 
-            <div className="flex flex-col justify-center items-center px-4 xs:px-6 sm:px-12 lg:px-24 min-h-max mt-20 ">
+            <div className="flex flex-col justify-center items-center px-4 xs:px-6 sm:px-12 lg:px-24 min-h-[70vh] mt-20 ">
               {children}
             </div>
 

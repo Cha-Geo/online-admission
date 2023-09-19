@@ -167,7 +167,9 @@ const Navbar = () => {
                               <Link
                                 key={j}
                                 className="pl-14 py-2 -mx-3 flex items-center gap-5 text-gray-900 hover:bg-gray-50 leading-7 rounded-lg  text-base"
-                                href={data.path}
+                                href={`${item.path}?section=${
+                                  data.id as string
+                                }`}
                                 onClick={() => setMobileMenuOpen(false)}
                               >
                                 <div className="icon">

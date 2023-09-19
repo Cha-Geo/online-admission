@@ -3,9 +3,10 @@ import "../styles/globals.css";
 import type { Metadata } from "next";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
 import Footer from "@/components/ui/Footer";
-import Navbar from "@/components/ui/Navbar"; 
+import Navbar from "@/components/ui/Navbar";
 import { fontMono, fontSans } from "@/public/lib/fonts";
 import { cn } from "@/public/lib/utils";
+import Provider from "@/services/Provider";
 
 export const metadata: Metadata = {
   title: "Alpha University - Admissions",
@@ -26,19 +27,21 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
           fontMono.variable
         )}
       >
-        <div className="h-screen flex flex-col">
-          <div className="">
-            <Navbar />
-          </div>
+        <Provider>
+          <div className="flex flex-col min-h-screen">
+            <div className="mb-auto">
+              <Navbar />
+            </div>
 
-          <main className="flex flex-col justify-center items-center sm:px-6 min-h-[80vh]">
-            {children}
-          </main>
+            <div className="flex flex-col justify-center items-center px-4 xs:px-6 sm:px-12 lg:px-24 min-h-max mt-20 ">
+              {children}
+            </div>
 
-          <div className="z-10">
-            <Footer />
+            <div className="z-10">
+              <Footer />
+            </div>
           </div>
-        </div>
+        </Provider>
 
         {/* Tailwind CSS Indicator (for development) */}
         <TailwindIndicator />

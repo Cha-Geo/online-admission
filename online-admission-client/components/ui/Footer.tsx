@@ -1,5 +1,6 @@
 import { footerLinks } from '@/public/data/navigationLinks';
-import Image from 'next/image'
+// import Image from 'next/image'
+import Link from 'next/link';
 
 const Footer = () => {
   return (
@@ -17,9 +18,9 @@ const Footer = () => {
                   key={data.name as string}
                   className="flex flex-col items-start mt-5 space-y-2"
                 >
-                  <p className="text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:hover:text-blue-400 hover:underline hover:cursor-pointer hover:text-blue-500">
+                  <Link href={data?.path} className="text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:hover:text-blue-400 hover:underline hover:cursor-pointer hover:text-blue-500">
                     {data.name}
-                  </p>
+                  </Link>
                 </div>
               ))}
             </div>
@@ -28,16 +29,16 @@ const Footer = () => {
 
         <hr className="my-6 border-gray-200 md:my-8 dark:border-gray-700 h-2" />
 
-        <div className="sm:col-span-2 ">
-          <h1 className="max-w-lg text-xl font-semibold tracking-tight text-gray-800 xl:text-2xl dark:text-white">
+        <div className="flex flex-col justify-center items-center mb-6 md:flex-row md:justify-between md:items-center">
+          <h1 className=" text-xl font-semibold text-start tracking-tight text-gray-800 xl:text-2xl dark:text-white w-full md:w-auto">
             Subscribe our newsletter to get an update.
           </h1>
 
-          <div className="flex flex-col mx-auto mt-6 space-y-3 md:space-y-0 md:flex-row md:justify-center md:items-center ">
+          <div className="flex flex-col mt-6 space-y-3 md:space-y-0 md:flex-row md:justify-center md:items-center w-full md:w-auto">
             <input
               id="email"
               type="text"
-              className="px-4 py-2 text-gray-700 bg-white border rounded-md dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-blue-300"
+              className="px-4 py-2 text-gray-700 w-full bg-white border rounded-md dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-opacity-40 focus:ring-blue-300 lg:w-[320px] xl:w-[400px]"
               placeholder="Email Address"
             />
 
@@ -49,7 +50,7 @@ const Footer = () => {
 
         <hr className="my-6 border-gray-200 md:my-8 dark:border-gray-700 h-2" />
 
-        <div className="sm:flex sm:items-center sm:justify-between">
+        {/* <div className="sm:flex sm:items-center sm:justify-between">
           <div className="flex flex-1 gap-4 hover:cursor-pointer">
             <Image
               src="https://www.svgrepo.com/show/303139/google-play-badge-logo.svg"
@@ -111,7 +112,7 @@ const Footer = () => {
               alt="db"
             />
           </div>
-        </div>
+        </div> */}
         <p className="font-sans py-8 text-start sm:text-center md:text-lg md:p-4  ">
           <span className="font-light opacity-80">&copy; 2023 </span>
           <span className="font-normal opacity-100">

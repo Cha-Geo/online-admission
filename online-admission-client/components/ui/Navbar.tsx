@@ -7,12 +7,12 @@ import Link from 'next/link';
 import * as navLinks from '@/public/data/navigationLinks';
 
 const Navbar = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
-  const [openDropdown, setOpenDropdown] = useState("");
+  const [openDropdown, setOpenDropdown] = useState<string>("");
 
   const handleDropdown = (itemName: string) => {
-    setOpenDropdown((prevItem) => (prevItem === itemName ? "" : itemName));
+    setOpenDropdown(prevItem => prevItem === itemName ? "" : itemName );
   };
 
   const closeDropdown = () => {
@@ -27,7 +27,7 @@ const Navbar = () => {
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
-          <Link href="#" className="-m-1.5 p-1.5">
+          <Link href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
             <Image
               width={20}

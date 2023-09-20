@@ -22,7 +22,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
     <html lang="en">
       <body
         className={cn(
-          "font-sans antialiased bg-gradient-to-r from-white to-neutral-50 bg-opacity-5",
+          "font-sans antialiased bg-gradient-to-r from-white to-neutral-50 bg-opacity-5 light",
           fontSans.variable,
           fontMono.variable
         )}

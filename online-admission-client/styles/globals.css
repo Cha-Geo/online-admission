@@ -4,6 +4,18 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@layer components {
+    .light {
+      --color-bg-primary: #007BFF;
+      --color-text-primary: #2d3748;
+      --hover-navbar-button-bg-primary: #007b00;
+      --hover-navbar-button-bg-primary-edited: #007b00;
+      --navbar-border-color-primary: #88b388;
+    }
+  }
+
+
 /* CSS for dropdown */
 /* CSS for dropdown */
 .dropdown {
@@ -33,7 +45,6 @@
   align-items: center; */
   min-width: 450px;
 }
-
 
 
 @media screen and (max-width: 640px) {
@@ -91,49 +102,6 @@
 .glassmorphism {
   @apply rounded-xl border border-gray-200 bg-white/20 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.2)] backdrop-blur p-5;
 }
-
-/* .glassmorphism_blue {
-  @apply rounded-xl border border-blue-300 bg-blue-100/20 shadow-[inset_10px_-50px_94px_0_rgb(100, 149, 237, 0.2)] backdrop-blur p-5;
-}
-
-.glassmorphism_amber {
-  @apply rounded-xl border border-amber-300 bg-amber-100/20 shadow-[inset_10px_-50px_94px_0_rgb(255, 193, 7, 0.2)] backdrop-blur p-5;
-}
-
-.glassmorphism_green {
-  @apply rounded-xl border border-green-300 bg-green-100/20 shadow-[inset_10px_-50px_94px_0_rgb(52, 168, 83, 0.2)] backdrop-blur p-5;
-}
-
-.glassmorphism_purple {
-  @apply rounded-xl border border-purple-300 bg-purple-100/20 shadow-[inset_10px_-50px_94px_0_rgb(186, 104, 200, 0.2)] backdrop-blur p-5;
-}
-
-.glassmorphism_red {
-  @apply rounded-xl border border-red-300 bg-red-100/20 shadow-[inset_10px_-50px_94px_0_rgb(220, 38, 38, 0.2)] backdrop-blur p-5;
-}
-
-.glassmorphism_yellow {
-  @apply rounded-xl border border-yellow-300 bg-yellow-100/20 shadow-[inset_10px_-50px_94px_0_rgb(255, 193, 7, 0.2)] backdrop-blur p-5;
-}
-
-.glassmorphism_teal {
-  @apply rounded-xl border border-teal-300 bg-teal-100/20 shadow-[inset_10px_-50px_94px_0_rgb(38, 194, 199, 0.2)] backdrop-blur p-5;
-}
-
-.glassmorphism_pink {
-  @apply rounded-xl border border-pink-300 bg-pink-100/20 shadow-[inset_10px_-50px_94px_0_rgb(236, 72, 153, 0.2)] backdrop-blur p-5;
-}
-
-.glassmorphism_indigo {
-  @apply rounded-xl border border-indigo-300 bg-indigo-100/20 shadow-[inset_10px_-50px_94px_0_rgb(94, 92, 230, 0.2)] backdrop-blur p-5;
-}
-
-.glassmorphism_orange {
-  @apply rounded-xl border border-orange-300 bg-orange-100/20 shadow-[inset_10px_-50px_94px_0_rgb(255, 159, 67, 0.2)] backdrop-blur p-5;
-} */
-
-
-
 
 .prompt_layout {
   @apply space-y-6 py-8 sm:columns-2 sm:gap-6 xl:columns-3;

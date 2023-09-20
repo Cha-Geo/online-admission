@@ -18,7 +18,10 @@ const Footer = () => {
                   key={data.name as string}
                   className="flex flex-col items-start mt-5 space-y-2"
                 >
-                  <Link href={data?.path} className="text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:hover:text-blue-400 hover:underline hover:cursor-pointer hover:text-blue-500">
+                  <Link
+                    href={data?.path}
+                    className="text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:hover:text-blue-400 hover:underline hover:cursor-pointer hover:text-blue-500"
+                  >
                     {data.name}
                   </Link>
                 </div>
@@ -29,7 +32,7 @@ const Footer = () => {
 
         <hr className="my-6 border-gray-200 md:my-8 dark:border-gray-700 h-2" />
 
-        <div className="flex flex-col justify-center items-center mb-6 md:flex-row md:justify-between md:items-center">
+        <div className="flex flex-col justify-center items-center mb-6 md:flex-row md:justify-between md:items-center lg:mx-14 xl:mx-20">
           <h1 className=" text-xl font-semibold text-start tracking-tight text-gray-800 xl:text-2xl dark:text-white w-full md:w-auto">
             Subscribe our newsletter to get an update.
           </h1>

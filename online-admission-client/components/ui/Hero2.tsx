@@ -3,11 +3,11 @@
 import React, { useState, useEffect} from "react";
 import Navbar from "./Navbar";
 
-const Hero2 = () => {
+const Hero2 = ({visible, setVisible}: IHero2) => {
 
     const [ prevScrollPos, setPrevScrollPos ] = useState<number>(0);
 
-    const [ visible, setVisible ] = useState<boolean>(true);
+
 
 
     const [navbarShow, setNavbarShow] = useState<NavbarShow>(false);
@@ -44,7 +44,7 @@ useEffect(() => {
   return () => {
     window.removeEventListener("scroll", handleScroll);
   };
-}, [prevScrollPos, visible]);
+}, [prevScrollPos, setVisible, visible]);
 
     
 

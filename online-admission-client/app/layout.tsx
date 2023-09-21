@@ -3,11 +3,10 @@ import "../styles/globals.css";
 import type { Metadata } from "next";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
 import Footer from "@/components/ui/Footer";
-import Navbar from "@/components/ui/Navbar";
 import { fontMono, fontSans } from "@/public/lib/fonts";
 import { cn } from "@/public/lib/utils";
 import Provider from "@/services/Provider";
-import Hero2 from "@/components/ui/Hero2";
+import Header from "@/components/ui/Header";
 
 export const metadata: Metadata = {
   title: "Alpha University - Admissions",
@@ -31,7 +30,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
         <Provider>
           <div className="flex flex-col min-h-screen">
             <div className="mb-auto">
-              <Hero2 />
+              <Header />
             </div>
 
             <div className="flex flex-col justify-center items-center px-4 xs:px-6 sm:px-12 lg:px-24 min-h-[70vh] mt-20 ">

@@ -5,10 +5,15 @@ import Image from "next/image";
 import { IconAllignLeftMenu, IconArrowDown, IconArrowUp, IconClose } from "../icons";
 import Link from 'next/link';
 import * as navLinks from '@/public/data/navigationLinks';
+import { usePathname } from 'next/navigation';
 
-const Navbar = ({isFixed}: INavbar) => {
+const Navbar = ({ isFixed }: INavbar) => {
+  
+  const pathname = usePathname();
   // Define a CSS class to make the navbar fixed
   const fixedNavbarClass = isFixed ? "fixed bg-white bg-opacity-80 backdrop-blur-lg shadow-md top-0 left-0 w-full" : "";
+
+  const pathnameClass = pathname === "/" ? " " : "mb-10";
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
@@ -25,7 +30,8 @@ const Navbar = ({isFixed}: INavbar) => {
 
   const { navigationItems } = navLinks;
   return (
-    <header className="absolute inset-x-0 top-0 z-50">
+    <div className={pathnameClass}>
+    <header className={`absolute inset-x-0 top-0 z-50 `}>
       <nav
         className={`flex items-center justify-between p-6 lg:px-8 text-2xl ${fixedNavbarClass}`}
         aria-label="Global"
@@ -114,10 +120,8 @@ const Navbar = ({isFixed}: INavbar) => {
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <Link
             href="/"
-            className={`-mx-3 rounded-lg px-3 py-2.5 text-base font-semibold leading-7  ${
-              isFixed
-                ? "black_btn hover:bg-gray-50"
-                : "white_btn"
+            className={`-mx-3 rounded-lg px-3 py-2.5 text-base font-semibold leading-7 hover:shadow-lg  ${
+              isFixed ? "black_btn hover:bg-gray-50" : "white_btn"
             }`}
             onClick={() => setMobileMenuOpen(false)}
           >
@@ -222,6 +226,7 @@ const Navbar = ({isFixed}: INavbar) => {
         </>
       )}
     </header>
+    </div>
   );
 }
 

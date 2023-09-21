@@ -22,6 +22,11 @@ type NavbarShow = boolean | string;
 interface INavbar {
   isFixed: boolean;
 }
+
+interface IHero2 {
+  visible: boolean;
+  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}
 interface ISidebarMenu {
   path: string;
   name: string;

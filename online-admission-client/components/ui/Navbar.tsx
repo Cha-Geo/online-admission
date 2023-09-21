@@ -7,12 +7,12 @@ import Link from 'next/link';
 import * as navLinks from '@/public/data/navigationLinks';
 
 const Navbar = () => {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
-  const [openDropdown, setOpenDropdown] = useState("");
+  const [openDropdown, setOpenDropdown] = useState<string>("");
 
   const handleDropdown = (itemName: string) => {
-    setOpenDropdown((prevItem) => (prevItem === itemName ? "" : itemName));
+    setOpenDropdown(prevItem => prevItem === itemName ? "" : itemName );
   };
 
   const closeDropdown = () => {
@@ -27,7 +27,7 @@ const Navbar = () => {
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
-          <Link href="#" className="-m-1.5 p-1.5">
+          <Link href="/" className="-m-1.5 p-1.5">
             <span className="sr-only">Your Company</span>
             <Image
               width={20}
@@ -80,11 +80,11 @@ const Navbar = () => {
                 )}
               </div>
               {!mobileMenuOpen && openDropdown === item.name && item.data && (
-                <div className="py-2 px-2 transition-all duration-500 font-semibold dropdown custom-dropdown">
+                <div className="py-2 px-2 transition-all duration-500 font-semibold dropdown custom-dropdown glassmorphism">
                   {item.data.map((data, j) => (
                     <Link
                       key={j}
-                      className="px-4 py-2   gap-5 text-gray-900 hover:bg-gray-50 leading-7 rounded-lg text-base text-start w-full "
+                      className="px-4 py-2   gap-5 text-gray-900 hover:bg-gray-200 hover:bg-opacity-50 leading-7 rounded-lg text-base text-start w-full "
                       href={`${item.path}?section=${data.id as string}`}
                       onClick={() => setMobileMenuOpen(false)}
                     >
@@ -201,5 +201,6 @@ const Navbar = () => {
     </header>
   );
 }
+
 
 export default Navbar

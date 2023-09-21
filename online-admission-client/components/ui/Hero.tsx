@@ -1,5 +1,4 @@
 export default function Hero() {
-    
   return (
     <div className="relative isolate px-6  lg:px-8 ">
       <div

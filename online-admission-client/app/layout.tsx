@@ -7,6 +7,7 @@ import Navbar from "@/components/ui/Navbar";
 import { fontMono, fontSans } from "@/public/lib/fonts";
 import { cn } from "@/public/lib/utils";
 import Provider from "@/services/Provider";
+import Hero2 from "@/components/ui/Hero2";
 
 export const metadata: Metadata = {
   title: "Alpha University - Admissions",
@@ -30,7 +31,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
         <Provider>
           <div className="flex flex-col min-h-screen">
             <div className="mb-auto">
-              <Navbar />
+              <Hero2 />
             </div>
 
             <div className="flex flex-col justify-center items-center px-4 xs:px-6 sm:px-12 lg:px-24 min-h-[70vh] mt-20 ">

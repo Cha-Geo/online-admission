@@ -155,16 +155,19 @@ function IconSeparator({ className, ...props }: React.ComponentProps<'svg'>) {
   )
 }
 
-function IconArrowDown({ className, ...props }: React.ComponentProps<'svg'>) {
+function IconArrowDown({ className, isFixed, use, ...props }: React.ComponentProps<'svg'> & { isFixed?: boolean, use?: boolean }) {
+  const iconColor = isFixed ? "#000000" : "#FFFFFF"; // Define icon color
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
+      fill={use ? iconColor : "#000000"}
+      fontWeight="bolder"
       clipRule="evenodd"
+      className={cn("h-2 w-2", className)}
       fillRule="evenodd"
       strokeLinejoin="round"
       strokeMiterlimit="2"
       viewBox="0 0 24 24"
-      className={cn("h-2 w-2", className)}
       {...props}
     >
       <path d="M11.178 19.569a.998.998 0 0 0 1.644 0l9-13A.999.999 0 0 0 21 5H3a1.002 1.002 0 0 0-.822 1.569l9 13z"></path>
@@ -172,22 +175,7 @@ function IconArrowDown({ className, ...props }: React.ComponentProps<'svg'>) {
   );
 }
 
-function IconArrowUp({ className, ...props }: React.ComponentProps<'svg'>) {
-  return (
-  <svg 
-    clipRule="evenodd" 
-    fillRule="evenodd" 
-    strokeLinejoin="round" 
-    strokeMiterlimit="2" 
-    viewBox="0 0 24 24" 
-    className={cn('h-4 w-4 ', className)}
-    {...props}
-    xmlns="http://www.w3.org/2000/svg">
-    <path d="m16.843 13.789c.108.141.157.3.157.456 0 .389-.306.755-.749.755h-8.501c-.445 0-.75-.367-.75-.755 0-.157.05-.316.159-.457 1.203-1.554 3.252-4.199 4.258-5.498.142-.184.36-.29.592-.29.23 0 .449.107.591.291 1.002 1.299 3.044 3.945 4.243 5.498z"/>
-  </svg>
 
-  );
-}
 function IconFilter({ className, ...props }: React.ComponentProps<'svg'>) {
   return (
     <svg 
@@ -499,34 +487,57 @@ function IconExternalLink({
   )
 }
 
-function IconAllignLeftMenu({
+function IconArrowUp({
   className,
+  isFixed,
+  use,
   ...props
-}: React.ComponentProps<"svg">) {
+}: React.ComponentProps<"svg"> & { isFixed?: boolean, use?: boolean }) {
+  const iconColor = isFixed ? "#000000" : "#FFFFFF"; // Define icon color
   return (
     <svg
-      viewBox="0 0 24 24"
-      className={cn("h-234 w-24", className)}
-      fill="currentColor"
       xmlns="http://www.w3.org/2000/svg"
+      fill={use ? iconColor : '#000000'}
+      fontWeight="bolder"
+      clipRule="evenodd"
+      className={cn("h-4 w-4", className)}
+      fillRule="evenodd"
+      strokeLinejoin="round"
+      strokeMiterlimit="2"
+      viewBox="0 0 24 24"
       {...props}
     >
-      <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-      <g
-        id="SVGRepo_tracerCarrier"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      ></g>
-      <g id="SVGRepo_iconCarrier">
-        {" "}
-        <path
-          d="M21 10H8M21 6H4M21 14H4M21 18H8"
-          stroke="#000000"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        ></path>{" "}
-      </g>
+      <path
+        d="m16.843 13.789c.108.141.157.3.157.456 0 .389-.306.755-.749.755h-8.501c-.445 0-.75-.367-.75-.755 0-.157.05-.316.159-.457 1.203-1.554 3.252-4.199 4.258-5.498.142-.184.36-.29.592-.29.23 0 .449.107.591.291 1.002 1.299 3.044 3.945 4.243 5.498z"
+        fillRule="nonzero"
+      />
+    </svg>
+  );
+}
+
+function IconAllignLeftMenu({
+  className,
+  isFixed,
+  ...props
+}: React.ComponentProps<"svg"> & { isFixed?: boolean }) {
+  const iconColor = isFixed ? "#000000" : "#FFFFFF"; // Define icon color
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill={iconColor}
+      fontWeight="bolder"
+      clipRule="evenodd"
+      className={cn("h-234 w-24", className)}
+      fillRule="evenodd"
+      strokeLinejoin="round"
+      strokeMiterlimit="2"
+      viewBox="0 0 24 24"
+      {...props}
+    >
+      <path
+        d="m11 16.745c0-.414.336-.75.75-.75h9.5c.414 0 .75.336.75.75s-.336.75-.75.75h-9.5c-.414 0-.75-.336-.75-.75zm-9-5c0-.414.336-.75.75-.75h18.5c.414 0 .75.336.75.75s-.336.75-.75.75h-18.5c-.414 0-.75-.336-.75-.75zm4-5c0-.414.336-.75.75-.75h14.5c.414 0 .75.336.75.75s-.336.75-.75.75h-14.5c-.414 0-.75-.336-.75-.75z"
+        fillRule="nonzero"
+      />
     </svg>
   );
 }

@@ -6,24 +6,28 @@ import { IconAllignLeftMenu, IconArrowDown, IconArrowUp, IconClose } from "../ic
 import Link from 'next/link';
 import * as navLinks from '@/public/data/navigationLinks';
 
-const Navbar = () => {
+const Navbar = ({isFixed}: INavbar) => {
+  // Define a CSS class to make the navbar fixed
+  const fixedNavbarClass = isFixed ? "fixed bg-white bg-opacity-80 backdrop-blur-lg shadow-md top-0 left-0 w-full" : "";
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+
 
   const [openDropdown, setOpenDropdown] = useState<string>("");
 
   const handleDropdown = (itemName: string) => {
-    setOpenDropdown(prevItem => prevItem === itemName ? "" : itemName );
+    setOpenDropdown((prevItem) => (prevItem === itemName ? "" : itemName));
   };
 
   const closeDropdown = () => {
     setOpenDropdown("");
-  }
+  };
 
   const { navigationItems } = navLinks;
   return (
     <header className="absolute inset-x-0 top-0 z-50">
       <nav
-        className="flex items-center justify-between p-6 lg:px-8 text-2xl"
+        className={`flex items-center justify-between p-6 lg:px-8 text-2xl ${fixedNavbarClass}`}
         aria-label="Global"
       >
         <div className="flex lg:flex-1">
@@ -38,9 +42,14 @@ const Navbar = () => {
             />
           </Link>
         </div>
-        <div className="flex lg:hidden">
+        <div
+          className={`flex lg:hidden rounded-full -m-2.5 ${
+            isFixed && "hover:shadow-sm"
+          }`}
+        >
           <IconAllignLeftMenu
-            className="-m-2.5 w-12 font-bold p-2.5 text-gray-700 cursor-pointer hover:shadow-sm rounded-full max"
+            className={`w-12 font-bold p-2 cursor-pointer max `}
+            isFixed={isFixed}
             onClick={() => setMobileMenuOpen(true)}
           />
         </div>
@@ -58,7 +67,9 @@ const Navbar = () => {
                 <Link
                   key={item.name}
                   href={item.path}
-                  className="text-base font-semibold hover:font-bold leading-6 text-gray-900"
+                  className={`text-base font-semibold hover:font-bold leading-6  ${
+                    isFixed ? "text-gray-900" : "text-white"
+                  }`}
                   onClick={closeDropdown}
                 >
                   {item.name}
@@ -67,11 +78,15 @@ const Navbar = () => {
                   <div className="flex items-center">
                     {openDropdown === item.name ? (
                       <IconArrowUp
+                        use
+                        isFixed={isFixed}
                         onClick={() => handleDropdown(item.name)}
-                        className="cursor-pointer"
+                        className="cursor-pointer text"
                       />
                     ) : (
                       <IconArrowDown
+                        use
+                        isFixed={isFixed}
                         onClick={() => handleDropdown(item.name)}
                         className="cursor-pointer"
                       />
@@ -97,9 +112,17 @@ const Navbar = () => {
           ))}
         </div>
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="/" className="outline_btn hover:bg-opacity-60 ">
+          <Link
+            href="/"
+            className={`-mx-3 rounded-lg px-3 py-2.5 text-base font-semibold leading-7  ${
+              isFixed
+                ? "black_btn hover:bg-gray-50"
+                : "white_btn"
+            }`}
+            onClick={() => setMobileMenuOpen(false)}
+          >
             Apply Now
-          </a>
+          </Link>
         </div>
       </nav>
       {mobileMenuOpen && (

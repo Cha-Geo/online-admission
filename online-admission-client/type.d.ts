@@ -16,6 +16,12 @@ interface IOpenCloseContext {
 
 
 // NAVIGATIONS
+
+type NavbarShow = boolean | string;
+
+interface INavbar {
+  isFixed: boolean;
+}
 interface ISidebarMenu {
   path: string;
   name: string;
@@ -56,4 +62,14 @@ interface ISectionData {
 }
 
 //END SECTIONS
+
+
+
+
+interface IPosts {
+      userId: number,
+    id: number,
+    title:string,
+    body: string
+}
 

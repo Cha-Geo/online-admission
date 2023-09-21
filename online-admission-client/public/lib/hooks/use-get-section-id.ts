@@ -8,7 +8,6 @@ function useScrollToSectionId() {
         useEffect(() => {
           const section = searchParams.get("section");
 
-          console.log(section);
           if (section) {
             scrollToSection(section); // Use the section identifier from the query
             }

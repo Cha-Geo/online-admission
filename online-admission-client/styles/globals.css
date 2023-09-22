@@ -6,7 +6,14 @@
 
 @layer components {
   .light {
-    --color-bg-primary: #007bff;
+    --btn_color_bg_primary: #007bff;
+    --btn_color_bg_secondary: #6c757d;
+    --btn_color_bg_destructive: #dc3545;
+    --btn_color_bg_outline: white;
+    --btn_color_bg_ghost: transparent;
+    --btn_color_bg_link: transparent;
+
+
     --color-text-primary: #2d3748;
     --hover-navbar-button-bg-primary: #007b00;
     --hover-navbar-button-bg-primary-edited: #007b00;

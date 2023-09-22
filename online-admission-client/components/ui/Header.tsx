@@ -3,7 +3,6 @@
 import { usePathname } from "next/navigation";
 import Hero2 from "./Hero2"
 import Navbar from "./Navbar";
-import { useState } from "react";
 
 type Props = {}
 

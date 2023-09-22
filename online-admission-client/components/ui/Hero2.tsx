@@ -1,3 +1,4 @@
+import { Button } from "../button";
 import Navbar from "./Navbar";
 
 const Hero2 = () => {
@@ -19,7 +20,7 @@ const Hero2 = () => {
         </div>
         <div className="container relative mx-auto xs:mt-8 lg:mt-12">
           <div className="items-center flex flex-wrap">
-            <div className="w-full lg:w-6/12 px-4 ml-auto mr-auto text-center">
+            <div className="w-full lg:w-[75%] px-4 ml-auto mr-auto text-center">
               <div className="pr-12">
                 <h1 className="text-white font-semibold text-5xl">
                   Your story starts with us.
@@ -34,6 +35,7 @@ const Hero2 = () => {
                   praesentium. Molestiae?
                 </p>
               </div>
+              <Button variant="outline" className="mt-10">Apply Now</Button>
             </div>
           </div>
         </div>

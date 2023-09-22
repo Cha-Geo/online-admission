@@ -1,7 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
 
-// components/ProgramCard.js
 interface IProgramCard {
     program: IPosts;
 }

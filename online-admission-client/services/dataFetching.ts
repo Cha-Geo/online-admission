@@ -91,3 +91,16 @@ export async function fetchStaticPosts() {
     console.log("Error fetching user posts: " + error.message);
   }
 }
+
+export async function fetchStaticPost(params: any) {
+  try {
+    const res = await fetch(`${FAKE_URL}/posts/${params.programID}`);
+    const post: IPosts = await res.json();
+
+    return post;
+  } catch (err) {
+    const error = err as AxiosError<Error>;
+    console.log(error.response?.data.message);
+    console.log("Error fetching user posts: " + error.message);
+  }
+}

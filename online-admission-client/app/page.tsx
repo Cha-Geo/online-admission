@@ -5,7 +5,6 @@ type Props = {}
 const Home = async (props: Props) => {
   const programs: IPosts[] = await fetchPosts();
 
-  console.log(programs?.slice(0,10));
   return (
     <div className='text-lg font-semibold '>
       {/* <Hero2 /> */}

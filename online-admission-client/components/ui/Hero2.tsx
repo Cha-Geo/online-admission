@@ -1,57 +1,10 @@
-"use client"
-
-import React, { useState, useEffect} from "react";
 import Navbar from "./Navbar";
 
-const Hero2 = ({visible, setVisible}: IHero2) => {
-
-    const [ prevScrollPos, setPrevScrollPos ] = useState<number>(0);
-
-
-
-
-    const [navbarShow, setNavbarShow] = useState<NavbarShow>(false);
-
-  const handleNavbarShow = () => {
-    setNavbarShow(!navbarShow);
-  };
-
-useEffect(() => {
-  const handleScroll = () => {
-    const currentScrollPos: number = window.scrollY;
-    const scrollingDown = currentScrollPos > prevScrollPos;
-
-    // Define the reasonable scroll distance to trigger visibility
-    const reasonableScrollDistance = 300; // You can adjust this value
-
-    if (scrollingDown) {
-      // If scrolling down and not already visible, set visible to true
-      if (!visible && currentScrollPos > reasonableScrollDistance) {
-        setVisible(true);
-      }
-    } else {
-      // If scrolling up, set visible to false when reaching a fraction of the reasonable distance
-      if (visible && currentScrollPos < reasonableScrollDistance / 3) {
-        setVisible(false);
-      }
-    }
-
-    setPrevScrollPos(currentScrollPos);
-  };
-
-  window.addEventListener("scroll", handleScroll);
-
-  return () => {
-    window.removeEventListener("scroll", handleScroll);
-  };
-}, [prevScrollPos, setVisible, visible]);
-
-    
-
+const Hero2 = () => {
   return (
     <div className="relative bg-blueGray-50">
       <div className="relative pt-16 pb-32 flex content-center items-center justify-center min-h-screen-75">
-        <Navbar isFixed={visible} />
+        <Navbar />
         <div
           className="absolute top-0 w-full h-full bg-center bg-cover"
           style={{
@@ -162,6 +115,6 @@ useEffect(() => {
       </section>
     </div>
   );
-}
+};
 
 export default Hero2;

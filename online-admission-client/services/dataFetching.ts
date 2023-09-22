@@ -66,10 +66,28 @@ export async function fetchUserApplications(userID: string) {
 //FETCH API
 //SEVER SIDE RENDERING
 export async function fetchPosts() {
-  const res = await fetch(`${FAKE_URL}/posts`, { cache: "no-store" });
-  const posts = await res.json();
+    try {
+        const res = await fetch(`${FAKE_URL}/posts`, { cache: "no-store" });
+        const posts = await res.json();
 
-  return posts;
+        return posts;
+    } catch (err) {
+        const error = err as AxiosError<Error>;
+        console.log(error.response?.data.message);
+        console.log("Error fetching user posts: " + error.message);
+    }
 }
 
 //STATIC SITE GENERATION
+export async function fetchStaticPosts() {
+  try {
+    const res = await fetch(`${FAKE_URL}/posts`);
+    const posts = await res.json();
+
+    return posts;
+  } catch (err) {
+    const error = err as AxiosError<Error>;
+    console.log(error.response?.data.message);
+    console.log("Error fetching user posts: " + error.message);
+  }
+}

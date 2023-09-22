@@ -1,11 +1,16 @@
+"use client"
+
 import React from "react";
 import { Button } from "../button";
+import useScrollToSectionId from "@/public/lib/hooks/use-get-section-id";
 
 type Props = {
   sectionData: ISection[];
 };
 
 const Sections: React.FC<Props> = ({ sectionData }) => {
+  useScrollToSectionId();
+
   return (
     <div className="">
       {sectionData.map((item) => (

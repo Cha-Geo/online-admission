@@ -9,10 +9,8 @@ type Props = {}
 
 const Header = (props: Props) => {
     const pathname = usePathname();
-
-    const [visible, setVisible] = useState<boolean>(true);
     
-    return <>{pathname === "/" ? <Hero2 visible={visible}setVisible={setVisible} /> : <Navbar isFixed={visible} />}</>;
+    return <>{pathname === "/" ? <Hero2 /> : <Navbar />}</>;
 }
 
 export default Header

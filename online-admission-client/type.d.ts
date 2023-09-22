@@ -12,6 +12,12 @@ interface IOpenCloseContext {
   setIsMobile: (show: boolean) => void;
 }
 
+interface INavbarVisibility {
+  isVisible: boolean;
+  setIsVisible: Dispatch<SetStateAction<boolean>>;
+}
+  
+
 //END CONTEXTS
 
 
@@ -72,7 +78,7 @@ interface ISectionData {
 
 
 interface IPosts {
-      userId: number,
+    userId: number,
     id: number,
     title:string,
     body: string

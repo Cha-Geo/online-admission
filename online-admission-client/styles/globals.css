@@ -4,26 +4,24 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer components {
-    .light {
-      --color-bg-primary: #007BFF;
-      --color-text-primary: #2d3748;
-      --hover-navbar-button-bg-primary: #007b00;
-      --hover-navbar-button-bg-primary-edited: #007b00;
-      --navbar-border-color-primary: #88b388;
-    }
+  .light {
+    --color-bg-primary: #007bff;
+    --color-text-primary: #2d3748;
+    --hover-navbar-button-bg-primary: #007b00;
+    --hover-navbar-button-bg-primary-edited: #007b00;
+    --navbar-border-color-primary: #88b388;
   }
+}
 
-  /* Define your custom colors for the SVG */
+/* Define your custom colors for the SVG */
 .fill-white {
-  fill: #FFFFFF; /* Your desired white color */
+  fill: #ffffff; /* Your desired white color */
 }
 
 .fill-black {
   fill: #000000; /* Your desired black color */
 }
-
 
 /* CSS for dropdown */
 /* CSS for dropdown */
@@ -38,13 +36,9 @@
   white-space: nowrap; /* Prevent long text from wrapping */
   text-overflow: ellipsis; /* Show ellipsis (...) for truncated text */
   text-align: center;
-
 }
 
-/* Custom CSS to override dropdown width */
-.custom-dropdown {
-  width: 280px !important; /* Adjust the width as needed */
-}
+
 
 /* Show the dropdown when the parent element is hovered */
 .hover-parent:hover .dropdown {
@@ -54,7 +48,6 @@
   align-items: center; */
   min-width: 450px;
 }
-
 
 @media screen and (max-width: 640px) {
   .main {
@@ -166,4 +159,15 @@
 
 .flex-between {
   @apply flex justify-between items-center;
+}
+
+
+/* IMPORTANT STYLES */
+/* Custom CSS to override dropdown width */
+.custom-dropdown {
+  width: 280px !important; /* Adjust the width as needed */
+}
+
+.about-margin {
+  margin-top: 1.1rem !important;
 }

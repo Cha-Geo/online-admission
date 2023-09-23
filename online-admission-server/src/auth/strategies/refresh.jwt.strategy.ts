@@ -6,12 +6,12 @@ import {
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
-import { Payload } from 'src/shared/types/Payload';
-import { UserService } from 'src/user/user.service';
+import { Payload } from '../../shared/interfaces/jwt_payload.interface';
+import { ApplicantsService } from 'src/applicants/applicants.service';
 
 @Injectable()
 export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
-  constructor(private userService: UserService) {
+  constructor(private userService: ApplicantsService) {
     super({
       ignoreExpiration: true,
       passReqToCallback: true,

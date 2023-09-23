@@ -17,12 +17,6 @@ export class User {
   @Column()
   role: string;
 
-  @Column()
-  createdAt: Date;
-
-  @Column()
-  updatedAt: Date;
-
   @Column({ default: true })
   isActive: boolean;
 }

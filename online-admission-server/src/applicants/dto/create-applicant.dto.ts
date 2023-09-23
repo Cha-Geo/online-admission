@@ -1,1 +1,4 @@
-export class CreateApplicantDto {}
+export class CreateApplicantDto {
+  firstName: string;
+  lastName: string;
+}

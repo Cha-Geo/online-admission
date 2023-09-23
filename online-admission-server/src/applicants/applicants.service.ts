@@ -4,23 +4,18 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Error, Model } from 'mongoose';
-import { UpdateApplicantDto } from './dto/update-applicant.dto';
-import { CurrentApplicant, Applicant } from 'src/shared/interfaces/applicant';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import * as randomToken from 'rand-token';
 import * as moment from 'moment';
-import { Payload } from 'src/shared/interfaces /jwt.payload';
-import { Profile } from 'src/user/interfaces/profile';
-import { SignInSuccess } from 'src/auth/messages/signin.success';
-import { RegisterUserDto } from 'src/auth/dto/register.dto';
-import { LoginDto } from 'src/auth/dto/login.dto';
+import { Payload } from '../shared/interfaces/jwt.payload';
+import { User } from './entities/applicant.entity';
 @Injectable()
 export class ApplicantsService {
   constructor(
-    @InjectModel('User') private userModel: Model<User>,
-    @InjectModel('Profile') private ProfileModel: Model<Profile>,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
   ) {}
 
   private sanitizeUser(user: User) {
@@ -28,44 +23,44 @@ export class ApplicantsService {
   }
 
   /* create new empty 'User' object and returns it */
-  async newUser(userDetails: RegisterUserDto): Promise<User> {
-    const profile: Profile = new this.ProfileModel();
-    const user: User = new this.userModel(userDetails);
-    user.profile = profile;
-    console.log('profile: ', profile);
-    console.log('user profile: ', user.profile);
-    console.log(user);
-    return user;
-  }
+  // async newUser(userDetails: RegisterUserDto): Promise<User> {
+  //   const profile: Profile = new this.ProfileModel();
+  //   const user: User = new this.usersRepository(userDetails);
+  //   user.profile = profile;
+  //   console.log('profile: ', profile);
+  //   console.log('user profile: ', user.profile);
+  //   console.log(user);
+  //   return user;
+  // }
 
-  async create(userDetails: RegisterUserDto): Promise<User> {
-    const { email } = userDetails;
-    console.log('email: ', email);
-    const user = await this.userModel.findOne({ email });
-    console.log('user: ', user);
+  // async create(userDetails: RegisterUserDto): Promise<User> {
+  //   const { email } = userDetails;
+  //   console.log('email: ', email);
+  //   const user = await this.usersRepository.findOne({ email });
+  //   console.log('user: ', user);
 
-    if (user === null) {
-      const newUser: User = await this.newUser(userDetails);
-      console.log('new user created: ', newUser);
+  //   if (user === null) {
+  //     const newUser: User = await this.newUser(userDetails);
+  //     console.log('new user created: ', newUser);
 
-      newUser.email = email;
+  //     newUser.email = email;
 
-      await newUser.save();
+  //     await newUser.save();
 
-      const sanitizedUser = this.sanitizeUser(newUser);
-      console.log('sanitized user: ', sanitizedUser);
+  //     const sanitizedUser = this.sanitizeUser(newUser);
+  //     console.log('sanitized user: ', sanitizedUser);
 
-      /* return this new user */
-      return sanitizedUser;
-    } else {
-      const message = `${SignInSuccess.USER_ALREADY_EXIST} as ${user.profile.username}`;
-      throw new HttpException(message, HttpStatus.BAD_REQUEST);
-    }
-  }
+  //     /* return this new user */
+  //     return sanitizedUser;
+  //   } else {
+  //     const message = `${SignInSuccess.USER_ALREADY_EXIST} as ${user.profile.username}`;
+  //     throw new HttpException(message, HttpStatus.BAD_REQUEST);
+  //   }
+  // }
 
-  async findByLogin(userDto: LoginDto) {
+  async findByLogin(userDto: any) {
     const { email, password } = userDto;
-    const user = await this.userModel.findOne({ email });
+    const user = await this.usersRepository.findOne({ email });
     if (!user) {
       throw new HttpException('User does not exist', HttpStatus.UNAUTHORIZED);
     }
@@ -76,13 +71,13 @@ export class ApplicantsService {
     }
   }
 
-  async getRefreshToken(userId: string): Promise<string> {
+  async getRefreshToken(userId: number): Promise<string> {
     const userDataToUpdate = {
       refreshToken: randomToken.generate(16),
       refreshTokenExp: moment().day(1).format('YYYY/MM/DD'),
     };
 
-    const user = await this.userModel.findById(userId);
+    const user = await this.usersRepository.findOneBy({ id: userId });
     console.log(user);
     await user.updateOne(user, userDataToUpdate);
 
@@ -91,14 +86,15 @@ export class ApplicantsService {
 
   /* used by  modules to search user by email */
   async findUser(userEmail: string): Promise<User> {
-    const user: User = await this.userModel
+    const user: User = await this.usersRepository
       .findOne({
         email: userEmail,
       })
       .exec();
 
     if (user === null) {
-      throw new Error(UserErrors.USER_DOES_NOT_EXISTS);
+      // throw new Error(UserErrors.USER_DOES_NOT_EXISTS);
+      throw new Error('An error has occured.');
     } else {
       console.log('found user: ', user);
       return user;
@@ -111,7 +107,7 @@ export class ApplicantsService {
   ): Promise<CurrentUser> {
     console.log(`email: ${email}`);
     console.log(`password: ${password}`);
-    const user = await this.userModel.findOne({ email }).exec();
+    const user = await this.usersRepository.findOne({ email }).exec();
     console.log(`user: ${user}`);
 
     if (user == null) {
@@ -143,7 +139,9 @@ export class ApplicantsService {
     console.log(`username: ${user_name}`);
     console.log(`password: ${password}`);
     console.log(`password 2: ${password}`);
-    const user = await this.userModel.findOne({ username: user_name }).exec();
+    const user = await this.usersRepository
+      .findOne({ username: user_name })
+      .exec();
     console.log(`user: ${user}`);
 
     if (user == null) {
@@ -174,7 +172,7 @@ export class ApplicantsService {
     refreshToken: string,
   ): Promise<CurrentUser> {
     const currentDate = moment().day(1).format('YYYY/MM/DD');
-    const user = await this.userModel
+    const user = await this.usersRepository
       .findOne({
         email,
         refreshToken,
@@ -199,20 +197,20 @@ export class ApplicantsService {
 
   async findByPayload(payload: Payload) {
     const { email } = payload;
-    return await this.userModel.findOne({ email });
+    return await this.usersRepository.findOne({ email });
   }
 
   async findByEmail(payload: Payload) {
     const { email } = payload;
-    return await this.userModel.findOne({ email });
+    return await this.usersRepository.findOne({ email });
   }
 
   async findAll(): Promise<User[]> {
-    return await this.userModel.find().exec();
+    return await this.usersRepository.find();
   }
 
   async findOne(userId: string): Promise<User> {
-    const foundUser = await this.userModel.findById(userId).exec();
+    const foundUser = await this.usersRepository.findById(userId).exec();
     if (!foundUser) {
       throw new NotFoundException();
     }
@@ -220,71 +218,71 @@ export class ApplicantsService {
     return foundUser.populate('profile');
   }
 
-  async update(
-    userId: string,
-    updateUserDto: LoginDto,
-  ): Promise<UpdateUserDto> {
-    {
-      const updatedUser = await this.userModel
-        .findByIdAndUpdate(userId, updateUserDto)
-        .exec();
-      if (!updatedUser) {
-        throw new NotFoundException();
-      }
-      return updatedUser;
-    }
-  }
+  // async update(
+  //   userId: string,
+  //   updateUserDto: LoginDto,
+  // ): Promise<UpdateUserDto> {
+  //   {
+  //     const updatedUser = await this.usersRepository
+  //       .findByIdAndUpdate(userId, updateUserDto)
+  //       .exec();
+  //     if (!updatedUser) {
+  //       throw new NotFoundException();
+  //     }
+  //     return updatedUser;
+  //   }
+  // }
 
-  async updateUser(
-    email: string,
-    userDetails: UpdateUserDetailsDto,
-  ): Promise<User> {
-    console.log(userDetails);
-    const user: User = await this.findUser(email);
-    console.log('user: ', user);
+  // async updateUser(
+  //   email: string,
+  //   userDetails: UpdateUserDetailsDto,
+  // ): Promise<User> {
+  //   console.log(userDetails);
+  //   const user: User = await this.findUser(email);
+  //   console.log('user: ', user);
 
-    user.profile.username = `${userDetails.first_name.toLocaleLowerCase()} ${userDetails.last_name.toLocaleLowerCase()}`;
+  //   user.profile.username = `${userDetails.first_name.toLocaleLowerCase()} ${userDetails.last_name.toLocaleLowerCase()}`;
 
-    if (userDetails.contact_no) {
-      user.profile.contact_no = userDetails.contact_no;
-    }
-    if (userDetails.first_name) {
-      user.profile.first_name = userDetails.first_name;
-    }
-    if (userDetails.last_name) {
-      user.profile.last_name = userDetails.last_name;
-    }
-    if (userDetails.area) {
-      user.profile.area = userDetails.area;
-    }
-    if (userDetails.city) {
-      user.profile.city = userDetails.city;
-    }
-    if (userDetails.state) {
-      user.profile.state = userDetails.state;
-    }
-    if (userDetails.pincode) {
-      user.profile.pinCode = userDetails.pincode;
-    }
+  //   if (userDetails.contact_no) {
+  //     user.profile.contact_no = userDetails.contact_no;
+  //   }
+  //   if (userDetails.first_name) {
+  //     user.profile.first_name = userDetails.first_name;
+  //   }
+  //   if (userDetails.last_name) {
+  //     user.profile.last_name = userDetails.last_name;
+  //   }
+  //   if (userDetails.area) {
+  //     user.profile.area = userDetails.area;
+  //   }
+  //   if (userDetails.city) {
+  //     user.profile.city = userDetails.city;
+  //   }
+  //   if (userDetails.state) {
+  //     user.profile.state = userDetails.state;
+  //   }
+  //   if (userDetails.pincode) {
+  //     user.profile.pinCode = userDetails.pincode;
+  //   }
 
-    user.save();
-    console.log('saved user: ', user);
-    return user;
-  }
+  //   user.save();
+  //   console.log('saved user: ', user);
+  //   return user;
+  // }
 
-  async updateRole(
-    userId: string,
-    updateUserDto: UpdateUserDto,
-  ): Promise<UpdateUserDto> {
-    const updatedUser = await this.userModel
-      .findByIdAndUpdate(userId, updateUserDto)
-      .exec();
-    if (!updatedUser) {
-      throw new NotFoundException();
-    }
-    return updatedUser;
-  }
+  // async updateRole(
+  //   userId: string,
+  //   updateUserDto: UpdateUserDto,
+  // ): Promise<UpdateUserDto> {
+  //   const updatedUser = await this.usersRepository
+  //     .findByIdAndUpdate(userId, updateUserDto)
+  //     .exec();
+  //   if (!updatedUser) {
+  //     throw new NotFoundException();
+  //   }
+  //   return updatedUser;
+  // }
   async remove(userId: string): Promise<void> {
-    return await this.userModel.findByIdAndDelete(userId);
+    return await this.usersRepository.findByIdAndDelete(userId);
   }
 }

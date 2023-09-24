@@ -6,21 +6,26 @@ export class RegistrationResponseModel {
   message: string;
 }
 
+export interface User {
+  id: number;
+  firstName: string;
+  username: string;
+  lastName: string;
+  email: string;
+  readonly password: string;
+  role: Role;
+  createdAt: Date;
+  updatedAt: Date;
+  isActive: boolean;
+  refreshToken?: string | null;
+  refreshTokenExp?: string | null;
+  profile: Profile;
+}
+
 // export class CurrentUser {
 //   _id: mongoose.Types.ObjectId;
 //   firstName: string;
 //   lastName: string;
 //   email: string;
 //   username: string;
-// }
-// export interface User extends Document {
-//   _id: mongoose.Types.ObjectId;
-//   readonly password: string;
-//   email: string;
-//   role: Role;
-//   created_at: Date;
-//   updated_at: Date;
-//   is_admin: boolean;
-//   last_login: Date;
-//   profile: Profile;
 // }

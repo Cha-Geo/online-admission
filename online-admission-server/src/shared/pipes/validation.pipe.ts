@@ -11,7 +11,7 @@ import { validate } from 'class-validator';
 import { plainToClass } from 'class-transformer';
 
 @Injectable()
-export class ValidationPipe implements PipeTransform {
+export class DtoValidationPipe implements PipeTransform {
   async transform(value: any, metadata: ArgumentMetadata) {
     if (!value) {
       throw new BadRequestException('Validation failed: No data submitted');

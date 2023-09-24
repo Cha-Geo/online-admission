@@ -1,34 +1,31 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity('profiles')
 export class Profile {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  username: string;
-
-  @Column()
+  @Column({ default: null })
   first_name: string;
 
-  @Column()
+  @Column({ default: null })
   last_name: string;
 
-  @Column()
+  @Column({ default: null })
   contact_no: string;
 
-  @Column()
+  @Column({ default: null })
   image: string;
 
-  @Column()
+  @Column({ default: null })
   area: string;
 
-  @Column()
+  @Column({ default: null })
   city: string;
 
-  @Column()
+  @Column({ default: null })
   state: string;
 
-  @Column()
+  @Column({ default: null })
   pinCode: string;
 }

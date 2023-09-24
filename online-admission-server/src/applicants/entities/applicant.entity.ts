@@ -4,11 +4,13 @@ import {
   PrimaryGeneratedColumn,
   JoinColumn,
   OneToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Profile } from './applicant.profile.enity';
 import { Role } from 'src/shared/interfaces/enums/roles.enum';
 
-@Entity()
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -35,10 +37,10 @@ export class User {
   })
   role: Role; // The role property is of type Role
 
-  @Column()
+  @CreateDateColumn()
   createdAt: Date;
 
-  @Column()
+  @UpdateDateColumn()
   updatedAt: Date;
 
   @Column({ default: true })

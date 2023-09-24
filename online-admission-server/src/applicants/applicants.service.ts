@@ -1,27 +1,40 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MoreThanOrEqual, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import * as randomToken from 'rand-token';
-import * as moment from 'moment';
+import moment from 'moment';
 import { Payload } from '../shared/interfaces/jwt.payload';
 import { User } from './entities/applicant.entity';
 import { User as CurrentUser } from './entities/current-applicant.entity';
 import { sanitizeUser } from 'src/shared/utils/users.utils';
 import { Profile } from './entities/applicant.profile.enity';
+import { CreateApplicantDto } from './dto/create-applicant.dto';
+import { LoginDto } from 'src/auth/dto';
 @Injectable()
 export class ApplicantsService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @InjectRepository(Profile)
     private profileRepository: Repository<Profile>,
   ) {}
 
   /* create new empty 'User' object and returns it */
-  async newUser(userDetails: any): Promise<User> {
+  async newUser(userDetails: CreateApplicantDto): Promise<User> {
+    console.log(userDetails);
     const profile: Profile = this.profileRepository.create();
-    const userArray: User[] = this.usersRepository.create([userDetails]); // Create an array with a single user object
-    const user: User = userArray[0]; // Access the first element of the array
+    const user: User = this.usersRepository.create({
+      ...userDetails,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }); // Create an array with a single user object
+    await this.profileRepository.save(profile);
     user.profile = profile;
     console.log('profile: ', profile);
     console.log('user profile: ', user.profile);
@@ -29,7 +42,7 @@ export class ApplicantsService {
     return user;
   }
 
-  async create(userDetails: any): Promise<User | any> {
+  async create(userDetails: CreateApplicantDto): Promise<User | any> {
     const { email } = userDetails;
     console.log('email: ', email);
     const existingUser = await this.usersRepository.findOne({
@@ -56,7 +69,7 @@ export class ApplicantsService {
     }
   }
 
-  async findByLogin(userDto: any) {
+  async findByLogin(userDto: LoginDto) {
     const { email, password } = userDto;
     try {
       const user = await this.usersRepository.findOneOrFail({
@@ -134,7 +147,7 @@ export class ApplicantsService {
       email: user.email,
       firstName: user.profile.first_name,
       lastName: user.profile.last_name,
-      username: user.profile.username,
+      username: user.username,
       isActive: user.isActive,
       role: user.role,
     };
@@ -170,7 +183,7 @@ export class ApplicantsService {
       firstName: user.profile.first_name,
       lastName: user.profile.last_name,
       email: user.email,
-      username: user.profile.username,
+      username: user.username,
       profile: user.profile,
       isActive: user.isActive,
       role: user.role,
@@ -202,7 +215,7 @@ export class ApplicantsService {
       firstName: user.profile.first_name,
       lastName: user.profile.last_name,
       email: user.email,
-      username: user.profile.username,
+      username: user.username,
       isActive: user.isActive,
       role: user.role,
     };
@@ -225,7 +238,18 @@ export class ApplicantsService {
   }
 
   async findOne(userId: number): Promise<User | undefined> {
-    return this.usersRepository.findOne({ where: { id: userId } });
+    const user = await this.usersRepository.findOne({
+      where: { id: userId },
+      relations: ['profile'], // Specify the related entity to load
+    });
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    console.log(user);
+
+    return user;
   }
 
   // async update(

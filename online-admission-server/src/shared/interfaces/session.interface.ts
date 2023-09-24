@@ -1,4 +1,4 @@
-import { User } from './applicant.interface';
+import { User } from 'src/applicants/entities/applicant.entity';
 
 export interface Session {
   user?: User;

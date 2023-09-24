@@ -1,6 +1,6 @@
-import mongoose, { Document } from 'mongoose';
 import { Profile } from './profile';
 import { Role } from '../enums/roles.enum';
+import { ObjectId } from 'typeorm';
 
 export class RegistrationResponseModel {
   successStatus: boolean;
@@ -8,14 +8,14 @@ export class RegistrationResponseModel {
 }
 
 export class CurrentApplicant {
-  _id: mongoose.Types.ObjectId;
+  _id: ObjectId;
   firstName: string;
   lastName: string;
   email: string;
   username: string;
 }
 export interface Applicant extends Document {
-  _id: mongoose.Types.ObjectId;
+  _id: ObjectId;
   readonly password: string;
   email: string;
   role: Role;

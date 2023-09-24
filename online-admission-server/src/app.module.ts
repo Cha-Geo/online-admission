@@ -9,6 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { User } from './applicants/entities/applicant.entity';
+import { Profile } from './applicants/entities/applicant.profile.enity';
 
 @Module({
   imports: [
@@ -18,12 +19,14 @@ import { User } from './applicants/entities/applicant.entity';
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 3306,
+      host: process.env.DATABASE_HOST,
+      port: process.env.DATABASE_PORT as unknown as number,
+      autoLoadEntities: true,
+      // url: process.env.DATABASE_URL,
       username: 'root',
-      password: 'root',
-      database: 'test',
-      entities: [User],
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_NAME,
+      entities: [User, Profile],
       synchronize: true,
     }),
     AdmissionModule,

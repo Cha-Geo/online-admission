@@ -1,6 +1,4 @@
-import { Document } from 'mongoose';
-
-export interface Profile extends Document {
+export interface Profile {
   username: string;
 
   first_name: string;

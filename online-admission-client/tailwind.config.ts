@@ -11,7 +11,12 @@ const config: Config = {
   theme: {
     extend: {
       backgroundColor: {
-        primary: "var(--color-bg-primary)",
+        "btn-primary": "var(--btn_color_bg_primary)",
+        "btn-secondary": "var(--btn_color_bg_secondary)",
+        "btn-destructive": "var(--btn_color_bg_destructive)",
+        "btn-outline": "var(--btn_color_bg_outline)",
+        "btn-ghost": "var(--btn_color_bg_ghost)",
+        "btn-link": "var(--btn_color_bg_link)",
       },
       textColor: {
         primary: "var(--color-primary-foreground)",

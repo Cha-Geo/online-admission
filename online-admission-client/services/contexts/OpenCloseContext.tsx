@@ -4,8 +4,6 @@ interface Props {
   children: React.ReactNode;
 }
 
-const isBrowser = typeof window !== "undefined";
-
 export const OpenCloseContext = createContext<IOpenCloseContext>({
   isOpen: false,
   setIsOpen: () => {},
@@ -15,17 +13,14 @@ export const OpenCloseContext = createContext<IOpenCloseContext>({
   navbarShow: false,
   setNavbarShow: () => {},
   handleNavbarShow: () => {},
-  isMobile: isBrowser && window.innerWidth <= 720,
+  isMobile: window.innerWidth <= 720,
   setIsMobile: () => {},
 });
 
 export const OpenCloseProvider = ({ children }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(true);
   const [navbarShow, setNavbarShow] = useState<boolean>(false);
-
-    const [isMobile, setIsMobile] = React.useState(
-      isBrowser && window.innerWidth <= 720
-    );
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 720); // Adjust the breakpoint as needed
 
   const handleNavbarShow = useCallback(() => {
     setNavbarShow((prevState) => !prevState);
@@ -59,3 +54,5 @@ export const OpenCloseProvider = ({ children }: Props) => {
     </OpenCloseContext.Provider>
   );
 };
+
+export default OpenCloseProvider; 

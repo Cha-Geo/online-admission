@@ -1,12 +1,18 @@
-import Hero from '@/components/ui/Hero';
-import React from 'react'
+import { fetchPosts } from '@/services/dataFetching';
 
 type Props = {}
 
-const Home = (props: Props) => {
+const Home = async (props: Props) => {
+  const programs: IPosts[] = await fetchPosts();
+
   return (
     <div className='text-lg font-semibold '>
-      <Hero />
+      {/* <Hero2 /> */}
+      {programs?.slice(0,10).map(program => (
+        <div key={program.id} className="">
+          <h2 className='py-4 my-4'>{program.title}</h2>
+        </div>
+      ))}
     </div>
   )
 }

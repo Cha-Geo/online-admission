@@ -4,33 +4,41 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Error, Model } from 'mongoose';
-import { UpdateApplicantDto } from './dto/update-applicant.dto';
-import { CurrentApplicant, Applicant } from 'src/shared/interfaces/applicant';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import * as randomToken from 'rand-token';
-import * as moment from 'moment';
-import { Payload } from 'src/shared/interfaces /jwt.payload';
-import { Profile } from 'src/user/interfaces/profile';
-import { SignInSuccess } from 'src/auth/messages/signin.success';
-import { RegisterUserDto } from 'src/auth/dto/register.dto';
-import { LoginDto } from 'src/auth/dto/login.dto';
+import { Payload } from '../shared/interfaces/jwt_payload.interface';
+import { User } from './entities/applicant.entity';
+import { sanitizeUser } from 'src/shared/utils/users.utils';
+import { Profile } from './entities/applicant.profile.enity';
+import { CreateApplicantDto } from './dto/create-applicant.dto';
+import { LoginDto } from 'src/auth/dto';
 @Injectable()
 export class ApplicantsService {
   constructor(
-    @InjectModel('User') private userModel: Model<User>,
-    @InjectModel('Profile') private ProfileModel: Model<Profile>,
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+    @InjectRepository(Profile)
+    private profileRepository: Repository<Profile>,
   ) {}
 
-  private sanitizeUser(user: User) {
-    return user.depopulate('password');
+  async getUsersRepo(): Promise<Repository<User>> {
+    return this.usersRepository;
   }
 
+  async getProfilesRepo(): Promise<Repository<Profile>> {
+    return this.profileRepository;
+  }
   /* create new empty 'User' object and returns it */
-  async newUser(userDetails: RegisterUserDto): Promise<User> {
-    const profile: Profile = new this.ProfileModel();
-    const user: User = new this.userModel(userDetails);
+  async newUser(userDetails: CreateApplicantDto): Promise<User> {
+    console.log(userDetails);
+    const profile: Profile = this.profileRepository.create();
+    const user: User = this.usersRepository.create({
+      ...userDetails,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }); // Create an array with a single user object
+    await this.profileRepository.save(profile);
     user.profile = profile;
     console.log('profile: ', profile);
     console.log('user profile: ', user.profile);
@@ -38,253 +46,166 @@ export class ApplicantsService {
     return user;
   }
 
-  async create(userDetails: RegisterUserDto): Promise<User> {
+  async create(userDetails: CreateApplicantDto): Promise<User | any> {
     const { email } = userDetails;
     console.log('email: ', email);
-    const user = await this.userModel.findOne({ email });
-    console.log('user: ', user);
+    const existingUser = await this.usersRepository.findOne({
+      where: { email },
+    });
+    console.log('existing user: ', existingUser);
 
-    if (user === null) {
-      const newUser: User = await this.newUser(userDetails);
-      console.log('new user created: ', newUser);
+    if (existingUser === null) {
+      // Create a new user instance with associated profile
+      const newUser = await this.newUser(userDetails);
 
-      newUser.email = email;
+      // Save the new user to the database
+      const savedUser = await this.usersRepository.save(newUser);
+      console.log('new user created: ', savedUser);
 
-      await newUser.save();
-
-      const sanitizedUser = this.sanitizeUser(newUser);
+      const sanitizedUser = sanitizeUser(savedUser);
       console.log('sanitized user: ', sanitizedUser);
 
       /* return this new user */
       return sanitizedUser;
     } else {
-      const message = `${SignInSuccess.USER_ALREADY_EXIST} as ${user.profile.username}`;
+      const message = `${'blah blah'} as ${'blah'}`;
       throw new HttpException(message, HttpStatus.BAD_REQUEST);
     }
   }
 
   async findByLogin(userDto: LoginDto) {
-    const { email, password } = userDto;
-    const user = await this.userModel.findOne({ email });
-    if (!user) {
+    const { username, password } = userDto;
+    try {
+      const user = await this.usersRepository.findOneOrFail({
+        where: { username },
+        relations: ['profile'],
+      });
+      console.log(user);
+      console.log(password);
+      console.log(user.password);
+      if (await bcrypt.compare(password, user.password)) {
+        return sanitizeUser(user);
+      } else {
+        throw new HttpException('Invalid Credentials', HttpStatus.UNAUTHORIZED);
+      }
+    } catch (error) {
       throw new HttpException('User does not exist', HttpStatus.UNAUTHORIZED);
     }
-    if (await bcrypt.compare(password, user.password)) {
-      return this.sanitizeUser(user);
-    } else {
-      throw new HttpException('Invalid Credentials', HttpStatus.UNAUTHORIZED);
-    }
-  }
-
-  async getRefreshToken(userId: string): Promise<string> {
-    const userDataToUpdate = {
-      refreshToken: randomToken.generate(16),
-      refreshTokenExp: moment().day(1).format('YYYY/MM/DD'),
-    };
-
-    const user = await this.userModel.findById(userId);
-    console.log(user);
-    await user.updateOne(user, userDataToUpdate);
-
-    return userDataToUpdate.refreshToken;
   }
 
   /* used by  modules to search user by email */
   async findUser(userEmail: string): Promise<User> {
-    const user: User = await this.userModel
-      .findOne({
-        email: userEmail,
-      })
-      .exec();
+    const user: User | undefined = await this.usersRepository.findOne({
+      where: { email: userEmail },
+      relations: ['profile'],
+    });
 
-    if (user === null) {
-      throw new Error(UserErrors.USER_DOES_NOT_EXISTS);
+    if (!user) {
+      // Handle the case where no user is found
+      throw new Error('User not found.');
     } else {
-      console.log('found user: ', user);
+      console.log('Found user:', user);
       return user;
     }
   }
 
-  async validateUserCredentials(
-    email: string,
-    password: string,
-  ): Promise<CurrentUser> {
-    console.log(`email: ${email}`);
-    console.log(`password: ${password}`);
-    const user = await this.userModel.findOne({ email }).exec();
-    console.log(`user: ${user}`);
-
-    if (user == null) {
-      return null;
-    }
-
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    console.log(`check password match: ${isValidPassword}`);
-    if (!isValidPassword) {
-      return null;
-    }
-
-    const currentUser = {
-      _id: user._id as mongoose.Types.ObjectId,
-      email: user.email,
-      firstName: user.profile.first_name,
-      lastName: user.profile.last_name,
-      username: user.profile.username,
-    };
-    console.log(currentUser);
-
-    return currentUser;
-  }
-
-  async validateUserCredentialsByUsername(
-    user_name: string,
-    password: string,
-  ): Promise<CurrentUser> {
-    console.log(`username: ${user_name}`);
-    console.log(`password: ${password}`);
-    console.log(`password 2: ${password}`);
-    const user = await this.userModel.findOne({ username: user_name }).exec();
-    console.log(`user: ${user}`);
-
-    if (user == null) {
-      return null;
-    }
-
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    console.log(`check password match: ${isValidPassword}`);
-    if (!isValidPassword) {
-      return null;
-    }
-
-    const currentUser = {
-      _id: user._id as mongoose.Types.ObjectId,
-      firstName: user.profile.first_name,
-      lastName: user.profile.last_name,
-      email: user.email,
-      username: user.profile.username,
-      profile: user.profile,
-    };
-    console.log(currentUser);
-
-    return currentUser;
-  }
-
-  async validRefreshToken(
-    email: string,
-    refreshToken: string,
-  ): Promise<CurrentUser> {
-    const currentDate = moment().day(1).format('YYYY/MM/DD');
-    const user = await this.userModel
-      .findOne({
-        email,
-        refreshToken,
-        refreshTokenExp: { $gte: currentDate },
-      })
-      .exec();
-
-    if (!user) {
-      return null;
-    }
-
-    const currentUser: CurrentUser = {
-      _id: user._id,
-      firstName: user.profile.first_name,
-      lastName: user.profile.last_name,
-      email: user.email,
-      username: user.profile.username,
-    };
-
-    return currentUser;
-  }
-
   async findByPayload(payload: Payload) {
     const { email } = payload;
-    return await this.userModel.findOne({ email });
+    return await this.usersRepository.findOne({ where: { email } });
   }
 
   async findByEmail(payload: Payload) {
     const { email } = payload;
-    return await this.userModel.findOne({ email });
+    return await this.usersRepository.findOne({
+      where: { email },
+      relations: ['profile'],
+    });
   }
 
   async findAll(): Promise<User[]> {
-    return await this.userModel.find().exec();
+    return await this.usersRepository.find({ relations: ['profile'] });
   }
 
-  async findOne(userId: string): Promise<User> {
-    const foundUser = await this.userModel.findById(userId).exec();
-    if (!foundUser) {
+  async findOne(userId: string): Promise<User | undefined> {
+    const user = await this.usersRepository.findOne({
+      where: { id: userId },
+      relations: ['profile'], // Specify the related entity to load
+    });
+
+    if (!user) {
       throw new NotFoundException();
     }
-    console.log(foundUser);
-    return foundUser.populate('profile');
-  }
 
-  async update(
-    userId: string,
-    updateUserDto: LoginDto,
-  ): Promise<UpdateUserDto> {
-    {
-      const updatedUser = await this.userModel
-        .findByIdAndUpdate(userId, updateUserDto)
-        .exec();
-      if (!updatedUser) {
-        throw new NotFoundException();
-      }
-      return updatedUser;
-    }
-  }
+    console.log(user);
 
-  async updateUser(
-    email: string,
-    userDetails: UpdateUserDetailsDto,
-  ): Promise<User> {
-    console.log(userDetails);
-    const user: User = await this.findUser(email);
-    console.log('user: ', user);
-
-    user.profile.username = `${userDetails.first_name.toLocaleLowerCase()} ${userDetails.last_name.toLocaleLowerCase()}`;
-
-    if (userDetails.contact_no) {
-      user.profile.contact_no = userDetails.contact_no;
-    }
-    if (userDetails.first_name) {
-      user.profile.first_name = userDetails.first_name;
-    }
-    if (userDetails.last_name) {
-      user.profile.last_name = userDetails.last_name;
-    }
-    if (userDetails.area) {
-      user.profile.area = userDetails.area;
-    }
-    if (userDetails.city) {
-      user.profile.city = userDetails.city;
-    }
-    if (userDetails.state) {
-      user.profile.state = userDetails.state;
-    }
-    if (userDetails.pincode) {
-      user.profile.pinCode = userDetails.pincode;
-    }
-
-    user.save();
-    console.log('saved user: ', user);
     return user;
   }
 
-  async updateRole(
-    userId: string,
-    updateUserDto: UpdateUserDto,
-  ): Promise<UpdateUserDto> {
-    const updatedUser = await this.userModel
-      .findByIdAndUpdate(userId, updateUserDto)
-      .exec();
-    if (!updatedUser) {
-      throw new NotFoundException();
-    }
-    return updatedUser;
-  }
-  async remove(userId: string): Promise<void> {
-    return await this.userModel.findByIdAndDelete(userId);
-  }
+  // async update(
+  //   userId: string,
+  //   updateUserDto: LoginDto,
+  // ): Promise<UpdateUserDto> {
+  //   {
+  //     const updatedUser = await this.usersRepository
+  //       .findByIdAndUpdate(userId, updateUserDto)
+  //       .exec();
+  //     if (!updatedUser) {
+  //       throw new NotFoundException();
+  //     }
+  //     return updatedUser;
+  //   }
+  // }
+
+  // async updateUser(
+  //   email: string,
+  //   userDetails: UpdateUserDetailsDto,
+  // ): Promise<User> {
+  //   console.log(userDetails);
+  //   const user: User = await this.findUser(email);
+  //   console.log('user: ', user);
+
+  //   user.profile.username = `${userDetails.first_name.toLocaleLowerCase()} ${userDetails.last_name.toLocaleLowerCase()}`;
+
+  //   if (userDetails.contact_no) {
+  //     user.profile.contact_no = userDetails.contact_no;
+  //   }
+  //   if (userDetails.first_name) {
+  //     user.profile.first_name = userDetails.first_name;
+  //   }
+  //   if (userDetails.last_name) {
+  //     user.profile.last_name = userDetails.last_name;
+  //   }
+  //   if (userDetails.area) {
+  //     user.profile.area = userDetails.area;
+  //   }
+  //   if (userDetails.city) {
+  //     user.profile.city = userDetails.city;
+  //   }
+  //   if (userDetails.state) {
+  //     user.profile.state = userDetails.state;
+  //   }
+  //   if (userDetails.pincode) {
+  //     user.profile.pinCode = userDetails.pincode;
+  //   }
+
+  //   user.save();
+  //   console.log('saved user: ', user);
+  //   return user;
+  // }
+
+  // async updateRole(
+  //   userId: string,
+  //   updateUserDto: UpdateUserDto,
+  // ): Promise<UpdateUserDto> {
+  //   const updatedUser = await this.usersRepository
+  //     .findByIdAndUpdate(userId, updateUserDto)
+  //     .exec();
+  //   if (!updatedUser) {
+  //     throw new NotFoundException();
+  //   }
+  //   return updatedUser;
+  // }
+  // async remove(userId: string): Promise<void> {
+  //   return await this.usersRepository.remove(userId);
+  // }
 }

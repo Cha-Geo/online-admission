@@ -1,7 +1,9 @@
 "use client";
 
 import React, { ReactNode } from "react";
-import { OpenCloseProvider } from "./contexts/OpenCloseContext";
+import {
+  VisibilityProvider,
+} from "./contexts/NavbarVisibilityContext";
 
 type Props = {
   children: ReactNode;
@@ -10,9 +12,9 @@ type Props = {
 const Provider = ({ children }: Props) => {
 
     return (
-        <OpenCloseProvider>
+        <VisibilityProvider>
             { children }
-        </OpenCloseProvider>
+        </VisibilityProvider>
   ) 
 };
 

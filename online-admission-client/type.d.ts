@@ -12,10 +12,27 @@ interface IOpenCloseContext {
   setIsMobile: (show: boolean) => void;
 }
 
+interface INavbarVisibility {
+  isVisible: boolean;
+  setIsVisible: Dispatch<SetStateAction<boolean>>;
+}
+  
+
 //END CONTEXTS
 
 
 // NAVIGATIONS
+
+type NavbarShow = boolean | string;
+
+interface INavbar {
+  isFixed: boolean;
+}
+
+interface IHero2 {
+  visible: boolean;
+  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}
 interface ISidebarMenu {
   path: string;
   name: string;
@@ -56,4 +73,14 @@ interface ISectionData {
 }
 
 //END SECTIONS
+
+
+
+
+interface IPosts {
+    userId: number,
+    id: number,
+    title:string,
+    body: string
+}
 

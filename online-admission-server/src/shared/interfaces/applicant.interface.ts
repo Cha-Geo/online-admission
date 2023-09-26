@@ -7,10 +7,8 @@ export class RegistrationResponseModel {
 }
 
 export interface User {
-  id: number;
-  firstName: string;
+  id: string;
   username: string;
-  lastName: string;
   email: string;
   readonly password: string;
   role: Role;
@@ -22,10 +20,11 @@ export interface User {
   profile: Profile;
 }
 
-// export class CurrentUser {
-//   _id: mongoose.Types.ObjectId;
-//   firstName: string;
-//   lastName: string;
-//   email: string;
-//   username: string;
-// }
+export class CurrentUser {
+  id: string;
+  email: string;
+  username: string;
+  isActive: boolean;
+  role: Role;
+  profile: Profile;
+}

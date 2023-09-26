@@ -8,21 +8,12 @@ export class CreateUsersTable1695540729279 implements MigrationInterface {
         columns: [
           {
             name: 'id',
-            type: 'int',
+            type: 'varchar', // Use varchar type for UUID
             isPrimary: true,
-            isGenerated: true,
-            generationStrategy: 'increment',
-          },
-          {
-            name: 'firstName',
-            type: 'varchar',
+            default: 'uuid()', // Generate UUIDs using MySQL's uuid() function
           },
           {
             name: 'username',
-            type: 'varchar',
-          },
-          {
-            name: 'lastName',
             type: 'varchar',
           },
           {

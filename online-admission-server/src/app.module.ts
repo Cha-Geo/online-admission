@@ -8,8 +8,10 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 // import { DataSource } from 'typeorm';
+import * as cookieParser from 'cookie-parser';
 import { User } from './applicants/entities/applicant.entity';
 import { Profile } from './applicants/entities/applicant.profile.enity';
+import { AuthMiddleware } from './shared/middlewares/auth.middleware';
 
 @Module({
   imports: [
@@ -39,6 +41,6 @@ import { Profile } from './applicants/entities/applicant.profile.enity';
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(cookieParser(), SessionMiddleware).forRoutes('*');
+    consumer.apply(cookieParser(), AuthMiddleware).forRoutes('*');
   }
 }

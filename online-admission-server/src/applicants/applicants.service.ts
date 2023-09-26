@@ -5,13 +5,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MoreThanOrEqual, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import * as randomToken from 'rand-token';
-import moment from 'moment';
-import { Payload } from '../shared/interfaces/jwt.payload';
+import { Payload } from '../shared/interfaces/jwt_payload.interface';
 import { User } from './entities/applicant.entity';
-import { User as CurrentUser } from './entities/current-applicant.entity';
 import { sanitizeUser } from 'src/shared/utils/users.utils';
 import { Profile } from './entities/applicant.profile.enity';
 import { CreateApplicantDto } from './dto/create-applicant.dto';
@@ -25,6 +22,13 @@ export class ApplicantsService {
     private profileRepository: Repository<Profile>,
   ) {}
 
+  async getUsersRepo(): Promise<Repository<User>> {
+    return this.usersRepository;
+  }
+
+  async getProfilesRepo(): Promise<Repository<Profile>> {
+    return this.profileRepository;
+  }
   /* create new empty 'User' object and returns it */
   async newUser(userDetails: CreateApplicantDto): Promise<User> {
     console.log(userDetails);
@@ -70,11 +74,15 @@ export class ApplicantsService {
   }
 
   async findByLogin(userDto: LoginDto) {
-    const { email, password } = userDto;
+    const { username, password } = userDto;
     try {
       const user = await this.usersRepository.findOneOrFail({
-        where: { email },
+        where: { username },
+        relations: ['profile'],
       });
+      console.log(user);
+      console.log(password);
+      console.log(user.password);
       if (await bcrypt.compare(password, user.password)) {
         return sanitizeUser(user);
       } else {
@@ -85,33 +93,11 @@ export class ApplicantsService {
     }
   }
 
-  async getRefreshToken(userId: number): Promise<string> {
-    const userDataToUpdate = {
-      refreshToken: randomToken.generate(16),
-      refreshTokenExp: moment().day(1).format('YYYY/MM/DD'),
-    };
-
-    const user = await this.usersRepository.findOne({ where: { id: userId } });
-
-    if (user) {
-      // Update the user entity with new refreshToken and refreshTokenExp
-      user.refreshToken = userDataToUpdate.refreshToken;
-      user.refreshTokenExp = userDataToUpdate.refreshTokenExp;
-
-      // Save the updated user entity to the database
-      await this.usersRepository.save(user);
-
-      return userDataToUpdate.refreshToken;
-    } else {
-      // Handle the case when the user is not found
-      throw new Error('User not found');
-    }
-  }
-
   /* used by  modules to search user by email */
   async findUser(userEmail: string): Promise<User> {
     const user: User | undefined = await this.usersRepository.findOne({
       where: { email: userEmail },
+      relations: ['profile'],
     });
 
     if (!user) {
@@ -123,106 +109,6 @@ export class ApplicantsService {
     }
   }
 
-  async validateUserCredentials(
-    email: string,
-    password: string,
-  ): Promise<CurrentUser> {
-    console.log(`email: ${email}`);
-    console.log(`password: ${password}`);
-    const user = await this.usersRepository.findOne({ where: { email } });
-    console.log(`user: ${user}`);
-
-    if (user == null) {
-      return null;
-    }
-
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    console.log(`check password match: ${isValidPassword}`);
-    if (!isValidPassword) {
-      return null;
-    }
-
-    const currentUser = {
-      id: user.id,
-      email: user.email,
-      firstName: user.profile.first_name,
-      lastName: user.profile.last_name,
-      username: user.username,
-      isActive: user.isActive,
-      role: user.role,
-    };
-    console.log(currentUser);
-
-    return currentUser;
-  }
-
-  async validateUserCredentialsByUsername(
-    user_name: string,
-    password: string,
-  ): Promise<CurrentUser> {
-    console.log(`username: ${user_name}`);
-    console.log(`password: ${password}`);
-    console.log(`password 2: ${password}`);
-    const user = await this.usersRepository.findOne({
-      where: { username: user_name },
-    });
-    console.log(`user: ${user}`);
-
-    if (user == null) {
-      return null;
-    }
-
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    console.log(`check password match: ${isValidPassword}`);
-    if (!isValidPassword) {
-      return null;
-    }
-
-    const currentUser = {
-      id: user.id,
-      firstName: user.profile.first_name,
-      lastName: user.profile.last_name,
-      email: user.email,
-      username: user.username,
-      profile: user.profile,
-      isActive: user.isActive,
-      role: user.role,
-    };
-    console.log(currentUser);
-
-    return currentUser;
-  }
-
-  async validRefreshToken(
-    email: string,
-    refreshToken: string,
-  ): Promise<CurrentUser> {
-    const currentDate = moment().day(1).format('YYYY/MM/DD');
-    const user = await this.usersRepository.findOne({
-      where: {
-        email,
-        refreshToken,
-        refreshTokenExp: MoreThanOrEqual(currentDate), // Use TypeORM's MoreThanOrEqual
-      },
-    });
-
-    if (!user) {
-      return null;
-    }
-
-    const currentUser: CurrentUser = {
-      id: user.id,
-      firstName: user.profile.first_name,
-      lastName: user.profile.last_name,
-      email: user.email,
-      username: user.username,
-      isActive: user.isActive,
-      role: user.role,
-    };
-
-    return currentUser;
-  }
-
   async findByPayload(payload: Payload) {
     const { email } = payload;
     return await this.usersRepository.findOne({ where: { email } });
@@ -230,14 +116,17 @@ export class ApplicantsService {
 
   async findByEmail(payload: Payload) {
     const { email } = payload;
-    return await this.usersRepository.findOne({ where: { email } });
+    return await this.usersRepository.findOne({
+      where: { email },
+      relations: ['profile'],
+    });
   }
 
   async findAll(): Promise<User[]> {
-    return await this.usersRepository.find();
+    return await this.usersRepository.find({ relations: ['profile'] });
   }
 
-  async findOne(userId: number): Promise<User | undefined> {
+  async findOne(userId: string): Promise<User | undefined> {
     const user = await this.usersRepository.findOne({
       where: { id: userId },
       relations: ['profile'], // Specify the related entity to load

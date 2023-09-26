@@ -8,15 +8,9 @@ export class CreateProfilesTable1695537705613 implements MigrationInterface {
         columns: [
           {
             name: 'id',
-            type: 'int',
+            type: 'varchar', // Use varchar type for UUID
             isPrimary: true,
-            isGenerated: true,
-            generationStrategy: 'increment',
-          },
-          {
-            name: 'username',
-            type: 'varchar',
-            default: null,
+            default: 'uuid()', // Generate UUIDs using MySQL's uuid() function
           },
           {
             name: 'first_name',
@@ -49,11 +43,6 @@ export class CreateProfilesTable1695537705613 implements MigrationInterface {
           {
             name: 'pinCode',
             type: 'varchar',
-          },
-          {
-            name: 'userId',
-            type: 'int',
-            isNullable: true, // Make it nullable if a profile doesn't always have a user
           },
         ],
       }),

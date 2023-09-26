@@ -6,29 +6,25 @@ import {
   OneToOne,
   CreateDateColumn,
   UpdateDateColumn,
+  BeforeInsert,
 } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 import { Profile } from './applicant.profile.enity';
 import { Role } from 'src/shared/interfaces/enums/roles.enum';
 
 @Entity('users')
 export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
-  firstName: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column()
   username: string;
 
   @Column()
-  lastName: string;
-
-  @Column()
   email: string;
 
   @Column()
-  readonly password: string;
+  password: string;
 
   @Column({
     type: 'enum',
@@ -55,4 +51,12 @@ export class User {
   @OneToOne(() => Profile) // Define a one-to-one relationship
   @JoinColumn() // Use @JoinColumn to specify the foreign key column
   profile: Profile; // The name of the property represents the related profile
+
+  @BeforeInsert()
+  async hashPassword() {
+    if (this.password) {
+      const saltRounds = 10;
+      this.password = await bcrypt.hash(this.password, saltRounds);
+    }
+  }
 }

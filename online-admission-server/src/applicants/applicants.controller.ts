@@ -13,13 +13,14 @@ import { ApplicantsService } from './applicants.service';
 import { CreateApplicantDto } from './dto/create-applicant.dto';
 import { DtoValidationPipe } from 'src/shared/pipes/validation.pipe';
 import { Response } from 'express';
-import { Payload } from 'src/shared/interfaces/jwt.payload';
+import { Payload } from 'src/shared/interfaces/jwt_payload.interface';
 import { LocalJwtAuthGuard } from 'src/shared/guards/localJwt.guard';
 import { User as UserInterface } from 'src/shared/interfaces/applicant.interface';
 import { User } from 'src/shared/decorators/user.decorator';
 import { LoginDto } from 'src/auth/dto';
 import { AuthService } from 'src/auth/auth.service';
 import { UserSuccess } from 'src/shared/utils/messages/user.success';
+import { same_site } from 'src/shared/interfaces/session';
 
 @Controller('applicants')
 export class ApplicantsController {
@@ -34,7 +35,7 @@ export class ApplicantsController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number) {
+  async findOne(@Param('id') id: string) {
     return await this.applicantsService.findOne(id);
   }
 
@@ -59,36 +60,47 @@ export class ApplicantsController {
     @Body(new DtoValidationPipe()) userDto: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const foundUser = await this.applicantsService.findByLogin(userDto);
-    console.log('found user: ', foundUser);
-    const payload: Payload = {
-      username: foundUser.username,
-      email: foundUser.email,
-    };
+    try {
+      const foundUser = await this.applicantsService.findByLogin(userDto);
 
-    const token = await this.authService.signPayload(payload);
-    console.log('found token');
-    const refreshToken = await this.applicantsService.getRefreshToken(user.id);
-    console.log('created refresh token');
+      if (!foundUser) {
+        return res.status(401).json({ message: 'Invalid credentials' });
+      }
 
-    const secretData = {
-      token,
-      refreshToken,
-    };
+      const payload: Payload = {
+        username: foundUser.username,
+        email: foundUser.email,
+      };
 
-    console.log(secretData);
+      const access_token = await this.authService.signPayload(payload);
+      // const refreshToken = await this.authService.getRefreshToken(foundUser.id);
 
-    res.cookie('auth-cookie', secretData, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      domain: 'localhost',
-    });
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-    return {
-      user,
-      msg: `${UserSuccess.SUCCESSFUL_LOGIN} ${foundUser.username}`,
-    };
+      // const secretData = {
+      //   token,
+      //   refreshToken,
+      // };
+
+      res.cookie(process.env.ACCESS_TOKEN_NAME, access_token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: process.env.SAME_SITE as same_site,
+        domain: process.env.COOKIE_DOMAIN,
+      });
+      res.setHeader(
+        'Access-Control-Allow-Origin',
+        process.env.ACCESS_CONTROL_ALLOW_ORIGIN,
+      );
+      res.setHeader(
+        'Access-Control-Allow-Credentials',
+        process.env.ACCESS_CONTROL_ALLOW_CREDENTIALS,
+      );
+      return {
+        foundUser,
+        msg: `${UserSuccess.SUCCESSFUL_LOGIN} ${foundUser.username}`,
+      };
+    } catch (error) {
+      console.error('Login error:', error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
   }
 }

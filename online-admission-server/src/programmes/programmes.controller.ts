@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { ProgrammesService } from './programmes.service';
 import { CreateProgrammeDto } from './dto/create-programme.dto';
 import { UpdateProgrammeDto } from './dto/update-programme.dto';
+import { JwtAuthGuard } from 'src/shared/guards/Jwt.guard';
 
 @Controller('programmes')
 export class ProgrammesController {
@@ -21,6 +23,7 @@ export class ProgrammesController {
   }
 
   @Get()
+  @UseGuards(JwtAuthGuard)
   findAll() {
     return this.programmesService.findAll();
   }

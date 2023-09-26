@@ -1,6 +1,14 @@
-import { Matches, IsEmail, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsOptional,
+  IsString,
+  Matches,
+  IsStrongPassword,
+} from 'class-validator';
 
-export class CreateApplicantDto {
+export class RegisterUserDto {
+  //state
+  @IsOptional()
   @IsString()
   @Matches(/^[a-zA-Z]+( +[a-zA-Z]+)*$/, { message: 'Enter valid username' })
   username: string;
@@ -8,7 +16,7 @@ export class CreateApplicantDto {
   // @Matches(/^[a-zA-Z0-9@#]{8,20}$/, {
   //   message: 'password weak',
   // })
-  // @IsStrongPassword()
+  @IsStrongPassword()
   readonly password: string;
 
   @IsEmail()

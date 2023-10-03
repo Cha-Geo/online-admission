@@ -1,26 +1,32 @@
-// dataFetching.js
-
 import axios, { AxiosError } from "axios";
 
-const API_BASE_URL = "http://localhost:7700"; // Replace with your API base URL
+const API_BASE_URL = "http://localhost:7700/api"; // Replace with your API base URL
 
 export const FAKE_URL = "https://jsonplaceholder.typicode.com";
 
-export const api = axios.create({
-  baseURL: API_BASE_URL,
+const requestOptions = {
+  method: "GET", // Replace with the HTTP method you need (GET, POST, PUT, DELETE, etc.)
+  credentials: "include", // Use 'include' to send cookies and other credentials
   headers: {
     "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "http://localhost:3000",
+    // Add other headers as needed
   },
-});
+};
 
-export const apiWithCredential = axios.create({
-  baseURL: API_BASE_URL,
-  withCredentials: true,
-  headers: {
-    "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "http://localhost:3001",
-  },
-});
+const myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/json");
+myHeaders.append("Access-Control-Allow-Origin", "http://localhost:3000");
+
+const myInit: RequestInit = {
+  method: "GET",
+  headers: myHeaders,
+  mode: "cors",
+  cache: "no-cache",
+  credentials: "include",
+};
+
+
 
 export async function fetchPrograms() {
   try {
@@ -102,5 +108,48 @@ export async function fetchStaticPost(params: any) {
     const error = err as AxiosError<Error>;
     console.log(error.response?.data.message);
     console.log("Error fetching user posts: " + error.message);
+  }
+}
+
+export async function fetchUsers() {
+      try {
+        const res = await fetch(`${API_BASE_URL}/applicants`, myInit);
+        const users = await res.json();
+
+        return users;
+      } catch (err) {
+        const error = err as AxiosError<Error>;
+        console.log(error.response?.data.message);
+        console.log("Error fetching user posts: " + error.message);
+      }
+}
+
+export async function signUserIn(data: any) {
+  const loginUrl = `${API_BASE_URL}/auth/login`;
+  const postInit: RequestInit = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "http://localhost:3000",
+    },
+    mode: "cors",
+    cache: "default",
+    credentials: "include",
+    body: JSON.stringify(data),
+  };
+  try {
+    const res = await fetch(loginUrl, postInit);
+
+    if (!res.ok) {
+      console.log('Network response was not ok'); 
+    }
+    const user = await res.json();
+    console.log(user);
+
+    return user;
+  } catch (err) {
+    const error = err as AxiosError<Error>;
+    console.log(error.response?.data.message);
+    console.log("Error Logging User In: " + error.message);
   }
 }

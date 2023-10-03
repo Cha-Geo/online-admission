@@ -26,6 +26,7 @@ export class ProgrammesController {
   @UseGuards(JwtAuthGuard)
   findAll() {
     return this.programmesService.findAll();
+    // res.redirect('/about');
   }
 
   @Get(':id')

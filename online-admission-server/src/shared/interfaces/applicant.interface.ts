@@ -20,6 +20,17 @@ export interface User {
   profile: Profile;
 }
 
+export interface SanitizedUser {
+  id: string;
+  username: string;
+  email: string;
+  role: Role;
+  createdAt: Date;
+  updatedAt: Date;
+  isActive: boolean;
+  profile: Profile;
+}
+
 export class CurrentUser {
   id: string;
   email: string;

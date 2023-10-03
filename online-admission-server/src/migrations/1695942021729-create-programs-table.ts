@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class CreateUsersTable1695540729279 implements MigrationInterface {
+export class CreateProgramsTable1695942021729 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'users',
+        name: 'programs',
         columns: [
           {
             name: 'id',
@@ -13,22 +13,12 @@ export class CreateUsersTable1695540729279 implements MigrationInterface {
             default: 'uuid()', // Generate UUIDs using MySQL's uuid() function
           },
           {
-            name: 'username',
+            name: 'name',
             type: 'varchar',
           },
           {
-            name: 'email',
-            type: 'varchar',
-          },
-          {
-            name: 'password',
-            type: 'varchar',
-          },
-          {
-            name: 'role',
-            type: 'enum',
-            enum: ['USER', 'ADMIN'], // Update with your Role enum values
-            default: 'USER',
+            name: 'duration',
+            type: 'number',
           },
           {
             name: 'createdAt',
@@ -42,31 +32,16 @@ export class CreateUsersTable1695540729279 implements MigrationInterface {
             onUpdate: 'CURRENT_TIMESTAMP',
           },
           {
-            name: 'isActive',
-            type: 'boolean',
-            default: true,
-          },
-          {
-            name: 'refreshToken',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'refreshTokenExp',
-            type: 'varchar',
-            isNullable: true,
-          },
-          {
-            name: 'profileId',
+            name: 'programsImageId',
             type: 'varchar',
             isNullable: true,
           },
         ],
         foreignKeys: [
           {
-            name: 'FK_Profile_User',
-            columnNames: ['profileId'],
-            referencedTableName: 'profiles',
+            name: 'FK_Programs_Image',
+            columnNames: ['programsImageId'],
+            referencedTableName: 'programs_image',
             referencedColumnNames: ['id'],
             onDelete: 'CASCADE', // Specify the behavior on profile deletion
             onUpdate: 'CASCADE', // Specify the behavior on profile update
@@ -78,6 +53,15 @@ export class CreateUsersTable1695540729279 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    queryRunner.dropTable('users', true, true);
+    // Drop the foreign key constraint first
+    const table = await queryRunner.getTable('programs');
+    const foreignKey = table.foreignKeys.find(
+      (fk) => fk.columnNames.indexOf('id') !== -1,
+    );
+    if (foreignKey) {
+      await queryRunner.dropForeignKey('programs', foreignKey);
+    }
+
+    await queryRunner.dropTable('programs');
   }
 }

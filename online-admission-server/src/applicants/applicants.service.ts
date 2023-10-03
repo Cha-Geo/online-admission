@@ -13,6 +13,7 @@ import { sanitizeUser } from 'src/shared/utils/users.utils';
 import { Profile } from './entities/applicant.profile.enity';
 import { CreateApplicantDto } from './dto/create-applicant.dto';
 import { LoginDto } from 'src/auth/dto';
+import { SanitizedUser } from 'src/shared/interfaces/applicant.interface';
 @Injectable()
 export class ApplicantsService {
   constructor(
@@ -122,11 +123,19 @@ export class ApplicantsService {
     });
   }
 
-  async findAll(): Promise<User[]> {
-    return await this.usersRepository.find({ relations: ['profile'] });
+  async findAll(): Promise<SanitizedUser[]> {
+    // Retrieve user data from the database
+    const users = await this.usersRepository.find({
+      relations: ['profile'],
+    });
+
+    // Use the sanitizeUser function to filter out sensitive information
+    const safeUsers = users.map((user) => sanitizeUser(user));
+
+    return safeUsers;
   }
 
-  async findOne(userId: string): Promise<User | undefined> {
+  async findOne(userId: string): Promise<SanitizedUser> {
     const user = await this.usersRepository.findOne({
       where: { id: userId },
       relations: ['profile'], // Specify the related entity to load
@@ -138,7 +147,7 @@ export class ApplicantsService {
 
     console.log(user);
 
-    return user;
+    return sanitizeUser(user);
   }
 
   // async update(

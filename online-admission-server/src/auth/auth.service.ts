@@ -14,7 +14,7 @@ import { Profile } from 'src/shared/interfaces/profile.interface';
 export class AuthService {
   constructor(private applicantService: ApplicantsService) {}
   async signPayload(payload: Payload) {
-    return sign(payload, process.env.SECRET_KEY, { expiresIn: '1000' });
+    return sign(payload, process.env.SECRET_KEY, { expiresIn: '1d' });
   }
 
   async getRefreshToken(userId: string): Promise<string> {

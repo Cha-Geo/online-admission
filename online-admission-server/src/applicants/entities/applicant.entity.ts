@@ -9,8 +9,8 @@ import {
   BeforeInsert,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { Profile } from './applicant.profile.enity';
 import { Role } from 'src/shared/interfaces/enums/roles.enum';
+import { Profile } from './applicant.profile.enity';
 
 @Entity('users')
 export class User {

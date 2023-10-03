@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AdmissionModule } from './admission/admission.module';
@@ -12,6 +12,10 @@ import * as cookieParser from 'cookie-parser';
 import { User } from './applicants/entities/applicant.entity';
 import { Profile } from './applicants/entities/applicant.profile.enity';
 import { AuthMiddleware } from './shared/middlewares/auth.middleware';
+import { Programme } from './programmes/entities/programme.entity';
+import { ProfileImagesModule } from './images/profile_images/profile_images.module';
+import { ProgramsImagesModule } from './images/programs_images/programs_images.module';
+import { ProgramsImage } from './images/programs_images/entities/programs_image.entity';
 
 @Module({
   imports: [
@@ -24,22 +28,23 @@ import { AuthMiddleware } from './shared/middlewares/auth.middleware';
       host: process.env.DATABASE_HOST,
       port: process.env.DATABASE_PORT as unknown as number,
       autoLoadEntities: true,
-      // url: process.env.DATABASE_URL,
       username: 'root',
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [User, Profile],
-      synchronize: true,
+      entities: [User, Profile, Programme, ProgramsImage],
+      synchronize: false,
     }),
     AdmissionModule,
     ApplicantsModule,
     ProgrammesModule,
     AuthModule,
+    ProfileImagesModule,
+    ProgramsImagesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {
+export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(cookieParser(), AuthMiddleware).forRoutes('*');
   }

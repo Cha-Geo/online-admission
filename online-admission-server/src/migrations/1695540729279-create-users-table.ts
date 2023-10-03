@@ -58,7 +58,7 @@ export class CreateUsersTable1695540729279 implements MigrationInterface {
           },
           {
             name: 'profileId',
-            type: 'int',
+            type: 'varchar',
             isNullable: true,
           },
         ],
@@ -78,6 +78,6 @@ export class CreateUsersTable1695540729279 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    queryRunner.dropTable('users');
+    queryRunner.dropTable('users', true, true);
   }
 }

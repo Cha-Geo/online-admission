@@ -13,13 +13,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       secretOrKey: process.env.SECRET_KEY,
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: Request) => {
-          const data = request?.cookies[process.env.ACCESS_TOKEN_NAME];
-          console.log(data);
-          if (!data) {
-            console.log('no data... Im stubborn asf');
+          const token = request?.cookies[process.env.ACCESS_TOKEN_NAME];
+          if (!token) {
+            console.log('no token... Im stubborn asf');
             return null;
           }
-          return data;
+          return token;
         },
       ]),
     });

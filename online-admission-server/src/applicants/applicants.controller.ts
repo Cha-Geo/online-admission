@@ -2,15 +2,12 @@ import {
   Body,
   Controller,
   Get,
-  HttpException,
-  HttpStatus,
   Param,
   Post,
   Res,
   UseGuards,
 } from '@nestjs/common';
 import { ApplicantsService } from './applicants.service';
-import { CreateApplicantDto } from './dto/create-applicant.dto';
 import { DtoValidationPipe } from 'src/shared/pipes/validation.pipe';
 import { Response } from 'express';
 import { Payload } from 'src/shared/interfaces/jwt_payload.interface';
@@ -37,20 +34,6 @@ export class ApplicantsController {
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.applicantsService.findOne(id);
-  }
-
-  @Post('register')
-  async register(@Body(new DtoValidationPipe()) userDto: CreateApplicantDto) {
-    try {
-      const user = await this.applicantsService.create(userDto);
-      return {
-        user,
-        msg: 'You have successfully created an account',
-        // msg: SignInSuccess.REGISTRATION_SUCCESS,
-      };
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-    }
   }
 
   @Post('login')
@@ -94,6 +77,7 @@ export class ApplicantsController {
         'Access-Control-Allow-Credentials',
         process.env.ACCESS_CONTROL_ALLOW_CREDENTIALS,
       );
+      res.redirect('/about');
       return {
         foundUser,
         msg: `${UserSuccess.SUCCESSFUL_LOGIN} ${foundUser.username}`,

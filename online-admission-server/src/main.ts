@@ -7,6 +7,8 @@ import * as session from 'express-session';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.setGlobalPrefix('api');
+
   // Add cookie parser middleware
   app.use(cookieParser());
 
@@ -17,6 +19,11 @@ async function bootstrap() {
       saveUninitialized: false,
     }),
   );
+
+  app.enableCors({
+    origin: 'http://localhost:3000', // Allow requests from any origin
+    credentials: true,
+  }); // enable CORS globally
 
   await app.listen(process.env.PORT);
 }

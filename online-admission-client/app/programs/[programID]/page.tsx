@@ -1,6 +1,3 @@
-// Purpose: This dynamic page shows detailed information about a specific academic program, including prerequisites, admission requirements, and application deadlines
-
-import ProgramCard from "@/components/ProgramCard";
 import { fetchStaticPost, fetchStaticPosts } from "@/services/dataFetching";
 
 type Props = {

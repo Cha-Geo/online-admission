@@ -31,4 +31,20 @@ export class ProgrammesService {
   remove(id: number) {
     return `This action removes a #${id} programme`;
   }
+
+  async getImage(id: string): Promise<Programme | null> {
+    try {
+      // Query the program by id, including its related images
+      const program = await this.programRepository.findOne({
+        where: { id },
+        relations: ['images'],
+      });
+
+      return program || null;
+    } catch (error) {
+      // Handle any database query errors
+      console.error(error);
+      throw error;
+    }
+  }
 }

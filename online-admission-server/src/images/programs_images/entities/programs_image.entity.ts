@@ -7,7 +7,16 @@ export class ProgramsImage {
   id: string;
 
   @Column()
-  url: string;
+  type: string;
+
+  @Column({ nullable: false })
+  filename: string;
+
+  // @Column('bytea', { nullable: true })
+  // data: Buffer; // Store the image data as a Buffer
+
+  @Column({ nullable: true })
+  localFilePath: string; // Store the path to the image file on the local disk
 
   @ManyToOne(() => Programme, (program) => program.images)
   program: Programme;

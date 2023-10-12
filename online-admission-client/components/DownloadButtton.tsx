@@ -52,7 +52,7 @@ const downloadFile = () => {
 
   return (
     <button
-      className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded flex items-center"
+      className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg flex items-center"
       onClick={downloadFile}
     >
       <IconDownload className="w-6 h-6 mr-2" /> {text}

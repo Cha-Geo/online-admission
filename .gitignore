@@ -125,6 +125,7 @@ dist
 
 # Ignore everything within online-admission-server/public/images
 /online-admission-server/public/images/*
+/online-admission-server/public/assets/images/*
 
 # yarn v2
 .yarn/cache

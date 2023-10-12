@@ -61,7 +61,8 @@ export class AuthController {
     console.log(tokens);
     client.setCredentials(tokens);
     console.log(client.credentials);
-    writeFileSync('token.json', JSON.stringify(tokens));
+    console.log('hjg', client.credentials.refresh_token);
+    writeFileSync('public/credentials.json', JSON.stringify(tokens));
     res.send('Success.');
   }
 

@@ -9,13 +9,10 @@ export class GoogoleAuthService {
   private readonly oauth2Client: Auth.OAuth2Client;
   private readonly drive: drive_v3.Drive;
   private readonly TOKEN_PATH = process.env.TOKEN_PATH;
-  private readonly SCOPES = [
-    'https://www.googleapis.com/auth/userinfo.profile',
-    'https://www.googleapis.com/auth/drive',
-  ];
+  private readonly SCOPES = ['https://www.googleapis.com/auth/drive'];
   constructor() {
     const { clientId, clientSecret, redirectUri } = googleOAuthConfig;
-    // Create an OAuth2 client
+
     this.oauth2Client = new google.auth.OAuth2(
       clientId,
       clientSecret,
@@ -24,12 +21,16 @@ export class GoogoleAuthService {
 
     const rootPath = process.cwd();
     const filePath = path.join(rootPath, this.TOKEN_PATH);
+    console.log(filePath);
 
     try {
       const data = fs.readFileSync(filePath, 'utf8');
+      console.log(data);
 
       const jsonData = JSON.parse(data);
+      console.log(jsonData);
       this.oauth2Client.setCredentials(jsonData);
+      console.log(this.oauth2Client.credentials);
     } catch (error) {
       console.error(`Error reading JSON file "${filePath}":`, error);
       return null;

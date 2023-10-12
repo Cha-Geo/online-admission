@@ -1,7 +1,7 @@
-import { Programme } from 'src/programmes/entities/programme.entity';
+import { Programmes } from 'src/programmes/entities/programmes.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 
-@Entity()
+@Entity('programs_image')
 export class ProgramsImage {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -12,12 +12,12 @@ export class ProgramsImage {
   @Column({ nullable: false })
   filename: string;
 
-  // @Column('bytea', { nullable: true })
-  // data: Buffer; // Store the image data as a Buffer
+  @Column({ nullable: false })
+  originalname: string;
 
   @Column({ nullable: true })
   localFilePath: string; // Store the path to the image file on the local disk
 
-  @ManyToOne(() => Programme, (program) => program.images)
-  program: Programme;
+  @ManyToOne(() => Programmes, (program) => program.images)
+  program: Programmes;
 }

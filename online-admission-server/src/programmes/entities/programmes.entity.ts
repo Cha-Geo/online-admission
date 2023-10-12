@@ -8,12 +8,12 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('programs')
-export class Programme {
+@Entity('programmes')
+export class Programmes {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ unique: true })
   name: string;
 
   @Column()
@@ -26,5 +26,5 @@ export class Programme {
   updatedAt: Date;
 
   @OneToMany(() => ProgramsImage, (image) => image.program)
-  image: ProgramsImage;
+  images: ProgramsImage[];
 }

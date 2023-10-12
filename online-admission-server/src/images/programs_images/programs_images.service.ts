@@ -33,7 +33,10 @@ export class ProgramsImagesService {
     return `This action removes a #${id} programsImage`;
   }
 
-  async storeImage(inputValues: IUploadFile): Promise<string> {
+  async storeImage(
+    inputValues: IUploadFile,
+    createprogram?: boolean,
+  ): Promise<ProgramsImage | string> {
     console.log('here in service');
     try {
       const { filename, type, localFilePath, originalname } = inputValues;
@@ -42,32 +45,42 @@ export class ProgramsImagesService {
       // Check if an image with the same name already exists
       const existingImage = await this.programImageRepository.findOne({
         where: {
-          filename,
+          originalname,
         },
       });
+      console.log(existingImage);
 
       if (existingImage) {
-        return `${filename} already exists`;
+        if (createprogram) {
+          return existingImage;
+        } else {
+          return `${filename} already exists`;
+        }
       } else {
         // Save the image data into the database
         const newImage = this.programImageRepository.create({
           type,
           filename,
+          originalname,
           localFilePath,
         });
         await this.programImageRepository.save(newImage);
         console.log(newImage);
 
-        return `${originalname} is uploaded successfully`;
+        if (createprogram) {
+          return newImage;
+        } else {
+          return `${originalname} is uploaded successfully`;
+        }
       }
     } catch (error) {
+      console.log(error);
       throw new Error('Error storing the image');
     }
   }
 
   async getAllImages() {
-    console.log('here in service');
-    const directoryPath = 'public/images/'; // Update with your directory path
+    const directoryPath = '../online-admission-client/public/assets/images'; // Update with your directory path
     return getAllImagesInDirectory(directoryPath);
   }
 }

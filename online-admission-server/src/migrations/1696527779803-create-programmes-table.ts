@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class CreateProgramsTable1695942021729 implements MigrationInterface {
+export class CreateProgrammesTable1696527779803 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'programs',
+        name: 'programmes',
         columns: [
           {
             name: 'id',
@@ -34,7 +34,7 @@ export class CreateProgramsTable1695942021729 implements MigrationInterface {
           {
             name: 'programsImageId',
             type: 'varchar',
-            isNullable: true,
+            // isNullable: true,
           },
         ],
         foreignKeys: [
@@ -54,14 +54,16 @@ export class CreateProgramsTable1695942021729 implements MigrationInterface {
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     // Drop the foreign key constraint first
-    const table = await queryRunner.getTable('programs');
-    const foreignKey = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf('id') !== -1,
-    );
-    if (foreignKey) {
-      await queryRunner.dropForeignKey('programs', foreignKey);
-    }
+    //   const table = await queryRunner.getTable('programs');
+    //   const foreignKey = table.foreignKeys.find(
+    //     (fk) => fk.columnNames.indexOf('id') !== -1,
+    //   );
+    //   if (foreignKey) {
+    //     await queryRunner.dropForeignKey('programs', foreignKey);
+    //   }
 
-    await queryRunner.dropTable('programs');
+    //   await queryRunner.dropTable('programs');
+    // }
+    await queryRunner.dropTable('programmes', true, true);
   }
 }

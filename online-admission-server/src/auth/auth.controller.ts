@@ -32,20 +32,6 @@ export class AuthController {
     private googleDriveService: GoogoleAuthService,
   ) {}
 
-  // @UseGuards(JwtAuthGuard)
-  // @Post('login')
-  // async login(@User() user: UserType, @Session() session: SessionType) {
-  //   return this.authService.login(user, session);
-  // }
-
-  // @Get()
-  // async list(@Req() req: Request) {
-  //   const cookies = req.cookies;
-  //   const token = cookies[process.env.ACCESS_TOKEN_NAME];
-  //   console.log(token);
-  //   return await this.googleDriveService.listFiles(token);
-  // }
-
   @Get('google')
   async regWithGoogle(@Res() res: Response) {
     const url = await this.googleDriveService.getUrl();

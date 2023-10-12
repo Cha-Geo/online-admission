@@ -3,13 +3,18 @@
 import React from "react";
 import { Button } from "../button";
 import useScrollToSectionId from "@/public/lib/hooks/use-get-section-id";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 type Props = {
   sectionData: ISection[];
+  customId?: string;
 };
 
-const Sections: React.FC<Props> = ({ sectionData }) => {
+const Sections: React.FC<Props> = ({ sectionData, customId }) => {
   useScrollToSectionId();
+  const pathname = usePathname();
+  console.log(pathname);
 
   return (
     <div className="">
@@ -21,7 +26,9 @@ const Sections: React.FC<Props> = ({ sectionData }) => {
           <p className="text-base text-gray-600 mb-4">
             {item.data.body} {item.data.conclusion}
           </p>
-          <Button>{'See More'}</Button>
+          <Link href={`${pathname}/${customId ? customId : item.id}`}>
+            <Button>{"See More"}</Button>
+          </Link>
         </section>
       ))}
     </div>

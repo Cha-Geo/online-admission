@@ -6,48 +6,48 @@ interface Props {
 
 export const OpenCloseContext = createContext<IOpenCloseContext>({
   isOpen: false,
+  activeAccordion: null,
   setIsOpen: () => {},
   setClose: () => {},
   setOpen: () => {},
-  handleOpenClose: () => {},
-  navbarShow: false,
-  setNavbarShow: () => {},
-  handleNavbarShow: () => {},
-  isMobile: window.innerWidth <= 720,
-  setIsMobile: () => {},
+  handleOpenClose: () => { },
+  handleClick: () => { },
+  handleToggle: () => {},
 });
 
 export const OpenCloseProvider = ({ children }: Props) => {
   const [isOpen, setIsOpen] = useState<boolean>(true);
-  const [navbarShow, setNavbarShow] = useState<boolean>(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 720); // Adjust the breakpoint as needed
+  const [activeAccordion, setActiveAccordion] = useState(null);
 
-  const handleNavbarShow = useCallback(() => {
-    setNavbarShow((prevState) => !prevState);
-  }, []);
+  const setOpen = () => setIsOpen(true);
+  const setClose = () => setIsOpen(false);
 
   const handleOpenClose = useCallback(() => {
     setIsOpen((prevState) => !prevState);
   }, []);
 
-  const setOpen = () => {
-    return setIsOpen(true);
-  };
-  const setClose = () => setIsOpen(false);
+    const handleClick = (idx: any) => {
+      setActiveAccordion(activeAccordion === idx ? null : idx);
+    };
+
+    const handleToggle = (idx: any) => {
+      return activeAccordion === idx
+        ? `max-height: ${document.getElementById(`tab-${idx}`)?.scrollHeight}px`
+        : "";
+    };
+
 
   return (
     <OpenCloseContext.Provider
       value={{
         isOpen,
+        activeAccordion,
         setIsOpen,
         setOpen,
         setClose,
         handleOpenClose,
-        navbarShow,
-        setNavbarShow,
-        handleNavbarShow,
-        isMobile,
-        setIsMobile,
+        handleClick,
+        handleToggle,
       }}
     >
       {children}

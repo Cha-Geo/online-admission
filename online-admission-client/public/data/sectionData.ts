@@ -159,10 +159,174 @@ const programsSectionData: ISection[] = [
   },
 ];
 
+// Example data
+const coreValuesData: IContents[] = [
+  {
+    title: "Honesty",
+    description:
+      "We embrace honesty and base our decision making and lifestyle on conditions of chastity.",
+  },
+  {
+    title: "Integrity",
+    description:
+      "We ensure strong moral principles in developing godly character.",
+  },
+  {
+    title: "Diligence",
+    description:
+      "We achieve excellence through hard work, conscientiousness, determination, and perseverance.",
+  },
+  {
+    title: "Dedication",
+    description:
+      "We are committed to actualizing our collective task of building and equipping God’s future army.",
+  },
+  {
+    title: "Holiness",
+    description:
+      "We stand for piety and total devotion to God in life and ministry.",
+  },
+];
+
+const addCoreValues: ISubContent[] = [
+  {
+  name: "The Significance of Knowledge in Christianity",
+  description: `This description highlights the importance of knowledge in the Christian faith, emphasizing that knowledge dedicated to serving God is considered wisdom. It also mentions how the Christian environment at DL-IBTC helps students develop principles for their Christian witness.`,
+  },
+  {
+  name: "Biblical Foundation in Education",
+  description: `This description underscores the centrality of Biblical truth in education, stating that all subjects are approached with the belief in the supremacy of Biblical truth. It also mentions the role of the Holy Spirit in guiding Christians in their quest for truth.`,
+  },
+  {
+  name: "Empowering Christian Learning",
+  description: `This description focuses on the empowering aspect of Christian education, where students are encouraged to use knowledge for the glory of God. It highlights the role of the Holy Spirit as a guiding force in understanding and interpreting the scriptures.`,
+}
+]
+
+const historyData: IContents[] = [
+  {
+    title: "Foundation",
+    description:
+      "DL-IBTC, or the Deeper Life International Bible Training College, is the arm of the church charged with the primary responsibility of theological training and development of Christian ministers.",
+  },
+  {
+    title: "Affiliations",
+    description:
+      "DL-IBTC is affiliated with Anchor University in Lagos, the premier University of the Deeper Christian Life Ministry.",
+  },
+  {
+    title: "Accreditations",
+    description:
+      "The University College is also accredited by the Ghana Tertiary Education Commission (GTEC) to run a 2-year Diploma in Theology Program.",
+  },
+];
+
+const dlIbtcHistoryData = [
+  {
+    name: "DL-IBTC's Founding and Growth",
+    description:
+      "DL-IBTC, or the Deeper Life International Bible Training College, is the arm of the church charged with the primary responsibility of theological training and development of Christian ministers as a means of providing a stable, rich, and dynamic human resource base for the church at large. In its wider application, DL-IBTC doctors, develops, trains, prepares, and equips Christian workers by offering practical hands-on training that deals with all phases of the Ministry. It strives to provide a helpful learning environment where the fruit of the Spirit is constantly applied in all areas of Christian living. Graduates are prepared for full-time or part-time service. Our programs are now open to the public to equip many who desire to do effective and enduring work for the Lord."
+  },
+  {
+    name: "The Rebirth of DL-IBTC",
+    description:
+      "The Deeper Life International Bible Training College (DL-IBTC), formerly known as the International Bible Training College (IBTC), started as an in-house training entity in Lagos, Nigeria, in 1980. However, in 1983, after producing three sets of students, the College temporarily closed its doors. In 1981, the leadership initiated a part-time program for the campus community named Short Term Ministerial Course (STMC) to reach the elite of society. It temporarily suspended these programs in 1983. Ghana also participated in training its ministers and leaders by sending students to Lagos for these programs before their eventual suspension."
+  },
+  {
+    name: "Expanding DL-IBTC's Reach",
+    description:
+      "In 1992-94 and 1997-2000, Ghana initiated its DL-IBTC programs at Pakyi No. 2, Kumasi, and Accra, respectively. Another program began in 2004 and continues to date, thanks to an idea from the former National Overseer, Pastor Israel Akinsola. In 2003, an IBTC Implementation Committee was formed to establish formal parameters for IBTC's rebirth. This committee worked diligently, leading to IBTC's revival. The first batch of students was oriented in Kumasi in November 2004, and the college opened in Kumasi as the sole campus in Ghana with 57 pioneering students."
+  },
+  {
+    name: "DL-IBTC's Growth and Impact",
+    description:
+      "Over the years, DL-IBTC has grown significantly, with multiple campuses and a focus on providing theological education. Graduates of DL-IBTC occupy key positions within the church's leadership structure, including Regional Overseers, Divisional Coordinators, Zonal and Group Coordinators, District Pastors, and Coordinators. DL-IBTC is registered with the Registrar General Department and approved by the Ghana Education Service (GES) to run a 1-year Certificate in Theology program. The University College is also accredited by the Ghana Tertiary Education Commission (GTEC) to run a 2-year Diploma in Theology Program. Today, DL-IBTC continues its mission to prepare individuals for effective service in ministry."
+  },
+  {
+    name: "DL-IBTC's Commitment",
+    description:
+      "DL-IBTC is affiliated with Anchor University in Lagos, the premier University of the Deeper Christian Life Ministry, responsible for awarding certificates to graduating students. Since September 2018, the University College has operated from its main permanent facility in Kumasi, serving as the sole Campus for the College in Ghana. Despite facing challenges, DL-IBTC is determined to overcome them. As H.W. Longfellow once said, 'the heights great men reached and kept were not attained by sudden flights. But they, while their companions slept, were toiling upward in the night.' This is our time. Be inspired!"
+  }
+];
+
+const aimsGoalsObjectives = [
+  {
+    title: "Christ-centered Living",
+    description: "Embracing Christ-centered living.",
+  },
+  {
+    title: "Biblical Knowledge",
+    description: "Comprehensive knowledge of Biblical principles and content.",
+  },
+  {
+    title: "Discipleship Imperative",
+    description:
+      "Confronting students with the imperative of making disciples of all nations.",
+  },
+  {
+    title: "Love and Dedication",
+    description: "Encouraging love, dedication to God and the Church.",
+  },
+  {
+    title: "Specialized Christian Service",
+    description: "Equipping students for specialized Christian service roles.",
+  },
+  {
+    title: "Biblical Exegesis and Sermon Preparation",
+    description:
+      "Instructing students in Biblical exegesis, sermon preparation, and pastoral counseling.",
+  },
+  {
+    title: "Spiritual Growth",
+    description:
+      "Fostering a desire for continual spiritual growth through discipline.",
+  },
+];
+
+const faqData: IFaqData[] = [
+  {
+    question: "FAQ Question 1",
+    answer:
+      "FAQ Answer 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+  {
+    question: "FAQ Question 1",
+    answer:
+      "FAQ Answer 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+  {
+    question: "FAQ Question 1",
+    answer:
+      "FAQ Answer 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+  {
+    question: "FAQ Question 1",
+    answer:
+      "FAQ Answer 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+  {
+    question: "FAQ Question 1",
+    answer:
+      "FAQ Answer 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+  {
+    question: "FAQ Question 1",
+    answer:
+      "FAQ Answer 1: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  },
+  // Add more FAQ items as needed
+];
+
 
 export {
-    aboutSectionData,
-    academicsSectionData,
-    admissionsSectionData,
-    programsSectionData,
-}
+  aboutSectionData,
+  academicsSectionData,
+  admissionsSectionData,
+  programsSectionData,
+  coreValuesData,
+  addCoreValues,
+  aimsGoalsObjectives,
+  faqData,
+  dlIbtcHistoryData,
+  historyData,
+};

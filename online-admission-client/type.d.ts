@@ -1,15 +1,13 @@
 // CONTEXTS
 interface IOpenCloseContext {
   isOpen: boolean;
+  activeAccordion: null;
   setIsOpen: (show: boolean) => void;
-  navbarShow: boolean;
-  setNavbarShow: (show: boolean) => void;
-  handleNavbarShow: () => void;
   setClose: () => void;
   setOpen: () => void;
   handleOpenClose: () => void;
-  isMobile: boolean;
-  setIsMobile: (show: boolean) => void;
+  handleClick: (idx: any) => void;
+  handleToggle: (idx: any) => any;
 }
 
 interface INavbarVisibility {
@@ -19,6 +17,20 @@ interface INavbarVisibility {
   
 
 //END CONTEXTS
+
+// DATA FETCHING
+
+// HOMEPAGE 
+interface DownloadButtonProps {
+  text: string;
+  fileId: string;
+}
+
+interface IData {
+  filename: string;
+}
+
+//END OF HOME
 
 
 // NAVIGATIONS
@@ -60,6 +72,26 @@ interface IFooterData {
 // END OF NAVIGATIONS
 
 
+// PROGRAMS
+interface IProgramImage {
+  id: string;
+  type: string;
+  filename: string;
+  originalname: string;
+  localFilePath: string; // Store the path to the image file on the local disk
+  // programId: string;
+}
+
+interface IProgram {
+  id: string;
+  name: string;
+  duration: number;
+  createdAt: Date;
+  updatedAt: Date;
+  images: IProgramImage[];
+}
+
+
 //SECTION
 interface ISection {
   data: ISectionData;
@@ -70,6 +102,22 @@ interface ISectionData {
   head: string;
   body: string;
   conclusion: string;
+}
+
+// Define the new data structure
+type IContents = {
+  title: string; // Adding the title for CoreValue
+  description: string; // Adding the description for CoreValue
+};
+
+type ISubContent = {
+  name: string;
+  description: string;
+};
+
+interface IFaqData {
+  question: string;
+  answer: string;
 }
 
 //END SECTIONS

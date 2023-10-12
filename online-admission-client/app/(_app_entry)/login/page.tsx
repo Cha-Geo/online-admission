@@ -36,9 +36,6 @@ const Login = (props: Props) => {
 
       const res = await signUserIn(loginData);
 
-      console.log(res?.status);
-      res?.status === 200 && console.log('success');
-
       setLoading(false);
 
       console.log(res);

@@ -25,6 +25,25 @@ const config: Config = {
       borderColor: {
         input: "var(--color-input)",
       },
+      gridTemplateColumns: {
+        // menu single card grid template
+        extraLargeMenuGroup: "repeat(auto-fill, minmax(28rem , 1fr ))",
+        largeMenuGroup: "repeat(auto-fill, minmax(18rem , 1fr ))",
+        cartCategoryGroup: "repeat(auto-fill, minmax(16rem , 1fr ))",
+        categoryGroup: "repeat(auto-fill, minmax(10rem , 1fr ))",
+        categoryGroupSmall: "repeat(auto-fill, minmax(10rem , 1fr ))",
+        defaultCategoryCols: "repeat(auto-fill, minmax(20rem , 1fr ))",
+
+        //Recommendations
+        RecGroup: "repeat(auto-fill, minmax(32rem , 1fr ))",
+        RecGroupSmall: "repeat(auto-fill, minmax(20rem , 1fr ))",
+        defaultRecCols: "repeat(auto-fill, minmax(16rem , 1fr ))",
+      },
+      screens: {
+        xxs: "330px",
+
+        xs: "420px",
+      },
     },
   },
   plugins: [],

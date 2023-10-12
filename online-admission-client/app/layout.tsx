@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import "../styles/globals.css";
+
 import type { Metadata } from "next";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
 import Footer from "@/components/ui/Footer";
@@ -15,9 +16,10 @@ export const metadata: Metadata = {
 
 type RootLayoutProps = {
   children: ReactNode;
+  isLogin?: boolean;
 };
 
-const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
+const RootLayout: React.FC<RootLayoutProps> = ({isLogin=false, children }) => {
   return (
     <html lang="en">
       <body
@@ -33,7 +35,7 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
               <Header />
             </div>
 
-            <div className="flex flex-col justify-center items-center px-4 xs:px-6 sm:px-12 lg:px-24 min-h-[70vh] mt-20 ">
+            <div className="flex flex-col justify-center items-center px-4 xs:px-6 sm:px-12 lg:px-24 min-h-[70vh] mt-4 mb-8">
               {children}
             </div>
 

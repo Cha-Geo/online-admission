@@ -21,7 +21,7 @@ const Hero2 = () => {
         <div className="container relative mx-auto xs:mt-8 lg:mt-12">
           <div className="items-center flex flex-wrap">
             <div className="w-full lg:w-[75%] px-4 ml-auto mr-auto text-center">
-              <div className="pr-12">
+              <div className="">
                 <h1 className="text-white font-semibold text-5xl">
                   Your story starts with us.
                 </h1>

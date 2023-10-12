@@ -1,4 +1,4 @@
-import { IconArrowElbow, IconCheck, IconDownload, IconEdit, IconExternalLink, IconHome, IconNextChat, IconRefresh } from "@/components/icons";
+import { IconArrowElbow, IconCheck, IconDownload, IconEdit, IconExternalLink, IconGitHub, IconHome, IconRefresh } from "@/components/icons";
 
 //NAVBAR LINKS
 export const aboutData: ISubSidebarMenu[] = [
@@ -130,7 +130,7 @@ export const navigationItems: ISidebarMenu[] = [
   {
     path: '/contact',
     name: 'Contact',
-    icon: IconNextChat,
+    icon: IconGitHub,
   },
   {
     path: '/academics',

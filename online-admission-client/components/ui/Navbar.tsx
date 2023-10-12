@@ -10,18 +10,16 @@ import { usePathname } from 'next/navigation';
 
 const Navbar = () => {
   const { isVisible } = useContext(VisibilityContext);
-  console.log(isVisible);
   
   const pathname = usePathname();
-  console.log(pathname);
-  // Define a CSS class to make the navbar fixed
+
   const fixedNavbarClass = pathname === "/" && isVisible && "fixed bg-white bg-opacity-80 backdrop-blur-lg shadow-md top-0 left-0 w-full";
 
-    const fixedClass =
-      pathname !== "/" &&
+  const fixedClass =
+    pathname !== "/" &&
       "fixed bg-white bg-opacity-80 backdrop-blur-lg shadow-md top-0 left-0 w-full";
 
-  const pathnameClass = pathname === "/" ? " " : "mb-10";
+  const pathnameClass = pathname === "/" ? " " : "mb-20";
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
@@ -147,7 +145,7 @@ const Navbar = () => {
         </nav>
         {mobileMenuOpen && (
           <>
-            <div className="fixed inset-0 z-50" />
+            <div className="fixed inset-0 z-50 bg-black bg-opacity-40 " />
             <div className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
               <div className="flex items-center justify-between font-semibold">
                 <Link href="/" className="-m-1.5 p-1.5">

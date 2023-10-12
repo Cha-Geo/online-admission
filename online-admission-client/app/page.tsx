@@ -1,28 +1,28 @@
-import { Button } from '@/components/button';
-import { fetchPosts, fetchUsers } from '@/services/dataFetching';
+import DownloadButton from '@/components/DownloadButtton';
+import ProgramCard from '@/components/ProgramCard';
+import { myGetWithCredentials } from '@/services/serverDataFetching';
+import { AxiosError } from 'axios';
 
 type Props = {}
 
 const Home = async (props: Props) => {
-  const programs: IPosts[] = await fetchPosts();
-  const users: any = await fetchUsers();
+  const programs = await myGetWithCredentials(process.env.PROGRAMS_URL!) as IProgram[];
 
   return (
     <div className="text-lg font-semibold ">
-      {/* <Hero2 /> */}
-      <Button>Click Me</Button>
-      
-      {/* {users && users.map((user) => (
-        <p key={user?.id}>
-          {user?.username}, {user?.role}{" "}
-        </p>
-      ))} */}
-
-      {programs?.slice(0, 10).map((program) => (
-        <div key={program.id} className="">
-          <h2 className="py-4 my-4">{program.title}</h2>
-        </div>
-      ))}
+      <div>
+        <h2>Download Our Latest Report</h2>
+        <DownloadButton
+          text="Download Now"
+          fileId={process.env.GOOGLE_DRIVE_FILE_ID!}
+        />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {Array.isArray(programs) &&
+          programs?.map((program) => (
+            <ProgramCard key={program.id} program={program} home />
+          ))}
+      </div>
     </div>
   );
 }

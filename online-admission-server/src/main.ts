@@ -9,7 +9,6 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
-  // Add cookie parser middleware
   app.use(cookieParser());
 
   app.use(
@@ -21,9 +20,9 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: 'http://localhost:3000', // Allow requests from any origin
+    origin: 'http://localhost:3000',
     credentials: true,
-  }); // enable CORS globally
+  });
 
   await app.listen(process.env.PORT);
 }

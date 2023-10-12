@@ -50,7 +50,7 @@ export class MulterMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     const storage = multer.diskStorage({
       destination: (req, file, cb) => {
-        cb(null, 'public/images/'); // Adjust the destination folder as needed
+        cb(null, '../online-admission-client/public/assets/images'); // Adjust the destination folder as needed
       },
       filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
@@ -66,9 +66,11 @@ export class MulterMiddleware implements NestMiddleware {
       console.log('middleware');
       if (err instanceof multer.MulterError) {
         // Handle Multer error (e.g., file size exceeded)
+        console.log(err.message);
         return res.status(400).send('Multer error: ' + err.message);
       } else if (err) {
         // Handle other errors
+        console.log(err.message);
         return res.status(500).send('Error: ' + err.message);
       }
       console.log('passed');

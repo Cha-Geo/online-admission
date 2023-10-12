@@ -11,11 +11,13 @@ import { LocalJwtAuthGuard } from 'src/shared/guards/localJwt.guard';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalJwtStrategy } from './strategies/local.jwt.strategy';
 import { RefreshStrategy } from './strategies/refresh.jwt.strategy';
+import { GoogoleAuthService } from './google-auth.service';
 
 @Module({
   controllers: [AuthController],
   providers: [
     AuthService,
+    GoogoleAuthService,
     JwtStrategy,
     JwtAuthGuard,
     RefreshStrategy,

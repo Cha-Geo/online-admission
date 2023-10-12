@@ -12,11 +12,11 @@ import * as cookieParser from 'cookie-parser';
 import { User } from './applicants/entities/applicant.entity';
 import { Profile } from './applicants/entities/applicant.profile.enity';
 import { AuthMiddleware } from './shared/middlewares/auth.middleware';
-import { Programme } from './programmes/entities/programme.entity';
 import { ProfileImagesModule } from './images/profile_images/profile_images.module';
 import { ProgramsImagesModule } from './images/programs_images/programs_images.module';
 import { ProgramsImage } from './images/programs_images/entities/programs_image.entity';
 import { MulterMiddleware } from './shared/middlewares/uploads.middleware';
+import { Programmes } from './programmes/entities/programmes.entity';
 
 @Module({
   imports: [
@@ -32,8 +32,8 @@ import { MulterMiddleware } from './shared/middlewares/uploads.middleware';
       username: 'root',
       password: process.env.DATABASE_PASSWORD,
       database: process.env.DATABASE_NAME,
-      entities: [User, Profile, Programme, ProgramsImage],
-      synchronize: false,
+      entities: [User, Profile, Programmes, ProgramsImage],
+      synchronize: true,
     }),
     AdmissionModule,
     ApplicantsModule,

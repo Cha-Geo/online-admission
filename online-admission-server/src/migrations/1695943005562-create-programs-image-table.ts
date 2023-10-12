@@ -15,7 +15,19 @@ export class CreateProgramsImageTable1695943005562
             default: 'uuid()', // Generate UUIDs using MySQL's uuid() function
           },
           {
-            name: 'url',
+            name: 'type',
+            type: 'varchar',
+          },
+          {
+            name: 'filename',
+            type: 'varchar',
+          },
+          {
+            name: 'originalName',
+            type: 'varchar',
+          },
+          {
+            name: 'localFilePath',
             type: 'varchar',
           },
           {

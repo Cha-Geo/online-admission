@@ -16,3 +16,9 @@ export async function getAllImagesInDirectory(directoryPath: string) {
     throw error;
   }
 }
+
+export function getUniqueFilename(name: string) {
+  const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+  const filename = uniqueSuffix + '-' + name;
+  return filename;
+}

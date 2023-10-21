@@ -42,12 +42,6 @@ export class User {
   @Column({ default: true })
   isActive: boolean;
 
-  @Column({ nullable: true }) // Make it nullable if it's not always present
-  refreshToken: string;
-
-  @Column({ nullable: true }) // Make it nullable if it's not always present
-  refreshTokenExp: string;
-
   @OneToOne(() => Profile) // Define a one-to-one relationship
   @JoinColumn() // Use @JoinColumn to specify the foreign key column
   profile: Profile; // The name of the property represents the related profile

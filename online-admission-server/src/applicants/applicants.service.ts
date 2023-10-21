@@ -1,8 +1,8 @@
 import {
-  HttpException,
-  HttpStatus,
+  ConflictException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -55,23 +55,19 @@ export class ApplicantsService {
     });
     console.log('existing user: ', existingUser);
 
-    if (existingUser === null) {
-      // Create a new user instance with associated profile
-      const newUser = await this.newUser(userDetails);
+    if (existingUser) throw new ConflictException('Email is already used');
 
-      // Save the new user to the database
-      const savedUser = await this.usersRepository.save(newUser);
-      console.log('new user created: ', savedUser);
+    const newUser = await this.newUser(userDetails);
 
-      const sanitizedUser = sanitizeUser(savedUser);
-      console.log('sanitized user: ', sanitizedUser);
+    // Save the new user to the database
+    const savedUser = await this.usersRepository.save(newUser);
+    console.log('new user created: ', savedUser);
 
-      /* return this new user */
-      return sanitizedUser;
-    } else {
-      const message = `${'blah blah'} as ${'blah'}`;
-      throw new HttpException(message, HttpStatus.BAD_REQUEST);
-    }
+    const sanitizedUser = sanitizeUser(savedUser);
+    console.log('sanitized user: ', sanitizedUser);
+
+    /* return this new user */
+    return sanitizedUser;
   }
 
   async findByLogin(userDto: LoginDto) {
@@ -81,16 +77,16 @@ export class ApplicantsService {
         where: { username },
         relations: ['profile'],
       });
-      console.log(user);
-      console.log(password);
-      console.log(user.password);
+
       if (await bcrypt.compare(password, user.password)) {
         return sanitizeUser(user);
       } else {
-        throw new HttpException('Invalid Credentials', HttpStatus.UNAUTHORIZED);
+        // Passwords don't match, throw UnauthorizedException
+        throw new UnauthorizedException('Incorrect username or password');
       }
     } catch (error) {
-      throw new HttpException('User does not exist', HttpStatus.UNAUTHORIZED);
+      // Entity not found or other error occurred, throw appropriate error
+      throw new UnauthorizedException('Incorrect username or password');
     }
   }
 
@@ -111,14 +107,18 @@ export class ApplicantsService {
   }
 
   async findByPayload(payload: Payload) {
-    const { email } = payload;
-    return await this.usersRepository.findOne({ where: { email } });
+    const { username } = payload;
+    return await this.usersRepository.findOne({ where: { email: username } });
+  }
+
+  async findByUsername(username: string) {
+    return await this.usersRepository.findOne({ where: { username } });
   }
 
   async findByEmail(payload: Payload) {
-    const { email } = payload;
+    const { username } = payload;
     return await this.usersRepository.findOne({
-      where: { email },
+      where: { email: username },
       relations: ['profile'],
     });
   }
@@ -138,14 +138,12 @@ export class ApplicantsService {
   async findOne(userId: string): Promise<SanitizedUser> {
     const user = await this.usersRepository.findOne({
       where: { id: userId },
-      relations: ['profile'], // Specify the related entity to load
+      relations: ['profile'],
     });
 
     if (!user) {
       throw new NotFoundException();
     }
-
-    console.log(user);
 
     return sanitizeUser(user);
   }

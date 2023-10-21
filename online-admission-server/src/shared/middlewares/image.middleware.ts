@@ -5,41 +5,42 @@ import { CustomRequest } from '../interfaces/custom-request.interface';
 
 @Injectable()
 export class ImageMiddleware implements NestMiddleware {
-  private readonly storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, 'public/images/');
-    },
-    filename: (req, file, cb) => {
-      cb(null, file.originalname);
-    },
-  });
+  private readonly storage = multer.memoryStorage(); // Use memory storage
 
-  private readonly allowedImage = (
+  private readonly allowedFiles = (
     req: CustomRequest,
     file: Express.Multer.File,
     cb: (error: Error | null, acceptFile: boolean) => void,
   ): void => {
-    // Accept images only
-    if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {
-      req.fileValidationError = 'Only image files are allowed!';
-      return cb(new Error('Only image files are allowed!'), false);
+    // Define the allowed file extensions
+    const allowedExtensions = /\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF|pdf|PDF)$/;
+
+    // Check if the file's originalname matches allowed extensions
+    if (!file.originalname.match(allowedExtensions)) {
+      req.fileValidationError = 'Only image and PDF files are allowed!';
+      cb(new Error('Only image and PDF files are allowed!'), false);
+      return; // Return immediately when an invalid file is found
     }
-    cb(null, true);
+
+    cb(null, true); // Call the callback after processing the file
   };
 
   public use(req: CustomRequest, res: Response, next: NextFunction): any {
     const upload = multer({
       storage: this.storage,
-      fileFilter: this.allowedImage,
-    }).single('image');
+      fileFilter: this.allowedFiles,
+    }).array('files', 5); // Use .array to accept multiple files with the field name 'files'
+
     upload(req, res, function (err: any) {
       if (err instanceof multer.MulterError) {
         res.status(400).json({ error: 'Multer error: ' + err.message });
       } else if (err) {
         res
           .status(500)
-          .json({ error: 'Error uploading the image: ' + err.message });
+          .json({ error: 'Error uploading the file: ' + err.message });
       } else {
+        // At this point, req.files will contain an array of files as buffers
+        console.log('done');
         next();
       }
     });

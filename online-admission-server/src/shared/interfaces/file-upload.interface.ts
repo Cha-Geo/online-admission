@@ -1,6 +1,6 @@
 export interface IUploadFile {
   filename: string;
-  type: string;
-  localFilePath: string;
-  originalname: string;
+  type?: string;
+  originalname?: string;
+  driveid?: string;
 }

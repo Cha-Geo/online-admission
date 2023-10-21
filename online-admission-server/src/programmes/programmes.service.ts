@@ -13,6 +13,10 @@ export class ProgrammesService {
     private programRepository: Repository<Programmes>,
   ) {}
 
+  async getProgramsRepo(): Promise<Repository<Programmes>> {
+    return this.programRepository;
+  }
+
   async create(
     createProgramDto: { data: CreateProgrammeDto },
     image: string | ProgramsImage,
@@ -78,7 +82,6 @@ export class ProgrammesService {
 
   async getImage(id: string): Promise<Programmes | null> {
     try {
-      // Query the program by id, including its related images
       const program = await this.programRepository.findOne({
         where: { id },
         relations: ['images'],

@@ -15,8 +15,6 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
   isActive: boolean;
-  refreshToken?: string | null;
-  refreshTokenExp?: string | null;
   profile: Profile;
 }
 

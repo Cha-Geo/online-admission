@@ -9,7 +9,7 @@ export class GoogoleAuthService {
   private readonly oauth2Client: Auth.OAuth2Client;
   private readonly drive: drive_v3.Drive;
   private readonly TOKEN_PATH = process.env.TOKEN_PATH;
-  private readonly SCOPES = ['https://www.googleapis.com/auth/drive'];
+  private readonly SCOPES = [process.env.SCOPE_A];
   constructor() {
     const { clientId, clientSecret, redirectUri } = googleOAuthConfig;
 

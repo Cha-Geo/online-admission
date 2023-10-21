@@ -8,31 +8,32 @@ import {
   Delete,
   UseGuards,
   Res,
-  UploadedFile,
   ParseFilePipe,
   MaxFileSizeValidator,
   HttpStatus,
+  UploadedFiles,
 } from '@nestjs/common';
 import { ProgrammesService } from './programmes.service';
 import { CreateProgrammeDto } from './dto/create-programme.dto';
 import { UpdateProgrammeDto } from './dto/update-programme.dto';
 import { JwtAuthGuard } from 'src/shared/guards/Jwt.guard';
 import { Response } from 'express';
-import { ProgramsImagesService } from 'src/images/programs_images/programs_images.service';
 import { GoogoleAuthService } from 'src/auth/google-auth.service';
+import { getUniqueFilename } from 'src/shared/utils/uploads.utils';
+import { ProgramsImage } from 'src/images/programs_images/entities/programs_image.entity';
+import { Programmes } from './entities/programmes.entity';
 
 @Controller('programmes')
 export class ProgrammesController {
   constructor(
     private readonly programmesService: ProgrammesService,
-    private imageService: ProgramsImagesService,
     private googleDriveService: GoogoleAuthService,
   ) {}
 
   @Post()
   @UseGuards(JwtAuthGuard)
   async create(
-    @UploadedFile(
+    @UploadedFiles(
       new ParseFilePipe({
         validators: [
           // ... Set of file validator instances here
@@ -40,63 +41,50 @@ export class ProgrammesController {
         ],
       }),
     )
-    file: Express.Multer.File,
+    files: Express.Multer.File[],
     @Body() createProgramDto: { data: CreateProgrammeDto },
+    @Res() res: Response,
   ) {
+    console.log('here', files);
     try {
-      console.log(createProgramDto);
-      const isProgram = true;
-      const originalname = file.originalname;
-      const filename = file.filename;
-      const type = file.mimetype;
-      const localFilePath = file.path;
-      const fileInfo = {
-        filename,
-        originalname,
-        type,
-        localFilePath,
-      };
-      const programImage = await this.imageService.storeImage(
-        fileInfo,
-        isProgram,
-      );
+      const isCreate = true;
+      let programImage: string | ProgramsImage;
+      let program: Programmes;
+      for (let i = 0; i < files.length; i++) {
+        const originalname = files[i].originalname;
+        const filename = getUniqueFilename(originalname);
+        const type = files[i].mimetype;
+        const buffer = files[i].buffer;
 
-      if (!programImage) {
-        throw new Error(`Image with filename ${originalname} not found.`);
+        programImage = await this.googleDriveService.uploadFile(
+          originalname,
+          type,
+          buffer,
+          filename,
+          isCreate,
+        );
+
+        program = await this.programmesService.create(
+          createProgramDto,
+          programImage,
+        );
       }
-
-      console.log('image to save: ', programImage);
-      const program = await this.programmesService.create(
-        createProgramDto,
-        programImage,
-      );
-
+      res.status(200).send(`Program successfully uploaded`);
       return program; // Return the created program or a success message
     } catch (error) {
       // Handle errors
       throw new Error('Failed to create program: ' + error.message);
     }
   }
-
   @Get()
-  findAll() {
-    console.log('im here');
-    return this.programmesService.findAll();
+  @UseGuards(JwtAuthGuard)
+  async findAll() {
+    const programmes = await this.programmesService.findAll();
+    return programmes;
   }
 
-  @Get('images')
-  async getAllImages(@Res() res: Response) {
-    console.log('about to');
-    try {
-      const images = await this.imageService.getAllImages();
-      return res.status(200).json(images); // Return the images directly without wrapping in an object
-    } catch (error) {
-      // Handle errors here
-      return res.status(500).json({ error: 'Error fetching images' });
-    }
-  }
-
-  @Get('download')
+  @Get('drive')
+  @UseGuards(JwtAuthGuard)
   async downloadFile(@Res() res: Response) {
     try {
       const file = await this.googleDriveService.downloadFile(
@@ -115,22 +103,45 @@ export class ProgrammesController {
     }
   }
 
-  @Get('files/:fileId/info')
-  async fileInfo(@Param('fileId') fileId: string, @Res() res: Response) {
-    try {
-      const drive = await this.googleDriveService.getDrive();
-      const metadata = await this.googleDriveService.getFileMetadata(
-        fileId,
-        drive,
-      );
-      const filename = metadata.name;
-      console.log('filename: ', filename);
+  @Get('drive/list')
+  @UseGuards(JwtAuthGuard)
+  async allFiles() {
+    return await this.googleDriveService.listFiles();
+  }
 
-      res.status(HttpStatus.OK).json({ filename }); // Send a JSON response with the filename
-    } catch (error) {
+  @Post('drive/upload')
+  @UseGuards(JwtAuthGuard)
+  async uploadImage(
+    @UploadedFiles(
+      new ParseFilePipe({
+        validators: [
+          // ... Set of file validator instances here
+          new MaxFileSizeValidator({ maxSize: 2000 * 1024 }),
+        ],
+      }),
+    )
+    files: Express.Multer.File[],
+    @Res() res: Response,
+  ) {
+    console.log('here', files);
+    try {
+      for (let i = 0; i < files.length; i++) {
+        const originalname = files[i].originalname;
+        const filename = getUniqueFilename(originalname);
+        const type = files[i].mimetype;
+        const buffer = files[i].buffer;
+        await this.googleDriveService.uploadFile(
+          originalname,
+          type,
+          buffer,
+          filename,
+        );
+      }
       res
-        .status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .json({ error: `Error downloading file: ${error}` });
+        .status(200)
+        .send(`File${files.length > 1 ? 's' : ''} successfully uploaded`);
+    } catch (error) {
+      res.send(error.message);
     }
   }
 
@@ -140,6 +151,7 @@ export class ProgrammesController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   update(
     @Param('id') id: string,
     @Body() updateProgrammeDto: UpdateProgrammeDto,
@@ -148,6 +160,7 @@ export class ProgrammesController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   remove(@Param('id') id: string) {
     return this.programmesService.remove(+id);
   }
@@ -169,92 +182,27 @@ export class ProgrammesController {
     res.send(program.images[0].filename); // Assuming you have imageData in your entity
   }
 
-  // @Get('download/:fileId')
-  // async downloadAFile(@Param('fileId') fileId: string, @Res() res: Response) {
-  //   const drive = await this.googleDriveService.getDrive();
-  //   try {
-  //     const response = await drive.files.get(
-  //       {
-  //         fileId,
-  //         alt: 'media',
-  //       },
-  //       { responseType: 'stream' },
-  //     );
+  @Get('drive/files/:fileId/info')
+  async fileInfo(@Param('fileId') fileId: string, @Res() res: Response) {
+    try {
+      const drive = await this.googleDriveService.getDrive();
+      const metadata = await this.googleDriveService.getFileMetadata(
+        fileId,
+        drive,
+      );
+      const filename = metadata.name;
+      console.log('filename: ', filename);
 
-  //     const dest = fs.createWriteStream('downloaded-file.png'); // Specify the destination file
+      res.status(HttpStatus.OK).json({ filename }); // Send a JSON response with the filename
+    } catch (error) {
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .json({ error: `Error downloading file: ${error}` });
+    }
+  }
 
-  //     response.data
-  //       .on('end', () => {
-  //         console.log('File downloaded');
-  //         res.status(HttpStatus.OK).send('File downloaded');
-  //       })
-  //       .on('error', (err) => {
-  //         console.error('Error downloading file', err);
-  //         res
-  //           .status(HttpStatus.INTERNAL_SERVER_ERROR)
-  //           .send('Error downloading file');
-  //       })
-  //       .pipe(dest); // Pipe the response stream to the destination file
-  //   } catch (error) {
-  //     console.error('Error fetching file details', error);
-  //     res
-  //       .status(HttpStatus.INTERNAL_SERVER_ERROR)
-  //       .send('Error fetching file details');
-  //   }
-  // }
-
-  // @Get('download/:fileId')
-  // async downloadAFile(@Param('fileId') fileId: string, @Res() res: Response) {
-  //   const drive = await this.googleDriveService.getDrive();
-  //   try {
-  //     const response = await drive.files.get(
-  //       {
-  //         fileId,
-  //         alt: 'media',
-  //       },
-  //       { responseType: 'stream' },
-  //     );
-
-  //     const dest = fs.createWriteStream('downloaded-file.png'); // Specify the destination file
-
-  //     response.data
-  //       .on('end', () => {
-  //         console.log('File downloaded');
-  //         const filename = 'downloaded-file.png';
-
-  //         // Set the appropriate Content-Type header for the file
-  //         res.setHeader('Content-Type', 'image/png');
-
-  //         // Prompt the user to choose the download location
-  //         res.setHeader(
-  //           'Content-Disposition',
-  //           `attachment; filename=${filename}`,
-  //         );
-
-  //         // Send the downloaded file as the response
-  //         const readStream = fs.createReadStream(filename);
-  //         readStream.pipe(res);
-
-  //         readStream.on('end', () => {
-  //           fs.unlinkSync(filename); // Delete the temporary file after sending
-  //         });
-  //       })
-  //       .on('error', (err) => {
-  //         console.error('Error downloading file', err);
-  //         res
-  //           .status(HttpStatus.INTERNAL_SERVER_ERROR)
-  //           .send('Error downloading file');
-  //       })
-  //       .pipe(dest); // Pipe the response stream to the destination file
-  //   } catch (error) {
-  //     console.error('Error fetching file details', error);
-  //     res
-  //       .status(HttpStatus.INTERNAL_SERVER_ERROR)
-  //       .send('Error fetching file details');
-  //   }
-  // }
-
-  @Get('download/:fileId')
+  @Get('drive/files/:fileId/download')
+  @UseGuards(JwtAuthGuard)
   async downloadAFile(@Param('fileId') fileId: string, @Res() res: Response) {
     const drive = await this.googleDriveService.getDrive();
     try {
@@ -271,7 +219,6 @@ export class ProgrammesController {
         { responseType: 'stream' },
       );
       const filename = metadataResponse.name;
-      const type = metadataResponse.mimeType;
 
       // res.setHeader('Content-Type', type);
       res.setHeader('Content-Disposition', `attachment; filename=${filename}`);
@@ -297,76 +244,47 @@ export class ProgrammesController {
     }
   }
 
-  @Post('upload')
-  async storeImage(
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          // ... Set of file validator instances here
-          new MaxFileSizeValidator({ maxSize: 2000 * 1024 }),
-        ],
-      }),
-    )
-    file: Express.Multer.File,
-  ) {
-    console.log('here', file);
-
+  @Get('drive/files/:fileId/view')
+  async viewFile(@Param('fileId') fileId: string, @Res() res: Response) {
+    console.log('file id: ', fileId);
+    const drive = await this.googleDriveService.getDrive();
     try {
-      console.log('here');
-      const originalname = file.originalname;
-      const filename = file.filename;
-      const type = file.mimetype;
-      const localFilePath = file.path;
-      const inputValues = { filename, type, localFilePath, originalname };
-      const alertMsg = await this.imageService.storeImage(inputValues);
+      const metadataResponse = await this.googleDriveService.getFileMetadata(
+        fileId,
+        drive,
+      );
 
-      console.log('done');
-      return { alertMsg };
+      const response = await drive.files.get(
+        {
+          fileId,
+          alt: 'media',
+        },
+        { responseType: 'stream' },
+      );
+      // const filename = metadataResponse.name;
+      const contentType = metadataResponse.mimeType;
+
+      // Set appropriate headers for image content type
+      res.setHeader('Content-Type', contentType);
+
+      // Send the image data as the response
+      response.data
+        .on('error', (err) => {
+          console.error('Error downloading file to view', err);
+          res
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .send('Error downloading file to view');
+        })
+        .pipe(res);
+
+      response.data.on('end', () => {
+        console.log('File downloaded to view');
+      });
     } catch (error) {
-      console.log(error);
-      return { error: 'Error uploading the image' };
+      console.error('Error fetching file details', error);
+      res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .send('Error fetching file details');
     }
   }
-
-  @Get('upload/drive')
-  async allFiles() {
-    return await this.googleDriveService.listFiles();
-  }
-
-  // @Get('upload/drive/:sampleText')
-  // // @UseGuards(JwtAuthGuard)
-  // async UploadToDrive(@Param('sampleText') sampleText: string) {
-  //   console.log('im woring dw.');
-  //   const drive = await this.googleDriveService.getDrive();
-  //   console.log(drive);
-
-  //   await drive.files.create({
-  //     requestBody: {
-  //       name: 'test.txt',
-  //       mimeType: 'text/plain',
-  //     },
-  //     media: {
-  //       mimeType: 'text/plain',
-  //       body: sampleText,
-  //     },
-  //   });
-  //   return 'Success.';
-  // }
-
-  @Get('upload/drive/image')
-  async uploadImage() {
-    return await this.googleDriveService.uploadBasic();
-  }
-
-  // @Get('download/:fileId')
-  // async downloadFile(@Param('fileId') fileId: string, @Res() res: Response) {
-  //   try {
-  //     return await this.googleDriveService.downloadFile();
-  //   } catch (error) {
-  //     // Handle errors
-  //     res
-  //       .status(HttpStatus.INTERNAL_SERVER_ERROR)
-  //       .json({ error: 'Error downloading file' });
-  //   }
-  // }
 }

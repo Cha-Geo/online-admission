@@ -12,12 +12,15 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalJwtStrategy } from './strategies/local.jwt.strategy';
 import { RefreshStrategy } from './strategies/refresh.jwt.strategy';
 import { GoogoleAuthService } from './google-auth.service';
+import { ProgramsImagesService } from 'src/images/programs_images/programs_images.service';
+import { ProgramsImagesModule } from 'src/images/programs_images/programs_images.module';
 
 @Module({
   controllers: [AuthController],
   providers: [
     AuthService,
     GoogoleAuthService,
+    ProgramsImagesService,
     JwtStrategy,
     JwtAuthGuard,
     RefreshStrategy,
@@ -28,6 +31,7 @@ import { GoogoleAuthService } from './google-auth.service';
   ],
   imports: [
     ApplicantsModule,
+    ProgramsImagesModule,
     JwtModule.register({
       secret: 'My random secret key never let others',
       signOptions: { expiresIn: '1d' },

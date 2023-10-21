@@ -2,16 +2,24 @@ import { Injectable } from '@nestjs/common';
 import { Auth, drive_v3, google } from 'googleapis';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as stream from 'stream';
 import { googleOAuthConfig } from 'src/shared/configs/auth.config';
+import { ProgramsImagesService } from 'src/images/programs_images/programs_images.service';
+import { IUploadFile } from 'src/shared/interfaces/file-upload.interface';
 
 @Injectable()
 export class GoogoleAuthService {
   private readonly oauth2Client: Auth.OAuth2Client;
+  private readonly sa_auth: Auth.GoogleAuth;
   private readonly drive: drive_v3.Drive;
   private readonly TOKEN_PATH = process.env.TOKEN_PATH;
+  private readonly SA_TOKEN_PATH = process.env.SA_TOKEN_PATH;
   private readonly SCOPES = [process.env.SCOPE_A];
-  constructor() {
+  constructor(private imageService: ProgramsImagesService) {
     const { clientId, clientSecret, redirectUri } = googleOAuthConfig;
+    const rootPath = process.cwd();
+    const filePath = path.join(rootPath, this.TOKEN_PATH);
+    const sa_filePath = path.join(rootPath, this.SA_TOKEN_PATH);
 
     this.oauth2Client = new google.auth.OAuth2(
       clientId,
@@ -19,20 +27,18 @@ export class GoogoleAuthService {
       redirectUri,
     );
 
-    const rootPath = process.cwd();
-    const filePath = path.join(rootPath, this.TOKEN_PATH);
-    console.log(filePath);
+    this.sa_auth = new google.auth.GoogleAuth({
+      keyFile: sa_filePath,
+      scopes: this.SCOPES,
+    });
 
     try {
       const data = fs.readFileSync(filePath, 'utf8');
-      console.log(data);
 
       const jsonData = JSON.parse(data);
-      console.log(jsonData);
+
       this.oauth2Client.setCredentials(jsonData);
-      console.log(this.oauth2Client.credentials);
     } catch (error) {
-      console.error(`Error reading JSON file "${filePath}":`, error);
       return null;
     }
 
@@ -74,39 +80,79 @@ export class GoogoleAuthService {
         pageSize: 10,
         fields: 'nextPageToken, files(id, name)',
       });
+      const nextPageToken = res.data.nextPageToken;
       const files = res.data.files;
-      console.log('files: ', files);
       if (files.length === 0) {
-        console.log('No files found.');
         return [];
       }
-      return files.map((file) => ({
+      const filesResult = files.map((file) => ({
         name: file.name,
         id: file.id,
       }));
+
+      return {
+        filesResult,
+        nextPageToken,
+      };
     } catch (error) {
-      console.error('Error listing files:', error);
       throw error;
     }
   }
 
-  async uploadBasic() {
+  async uploadFile(
+    name: string,
+    mimeType: string,
+    buffer: Buffer,
+    filename?: string,
+    isCreate?: boolean,
+  ) {
     const drive = await this.getDrive();
-    const requestBody = {
-      name: 'photo.jpg_uploaded_by_George',
+
+    // Check if a file with the same name already exists
+    const query = `name = '${name}'`;
+    const existingFiles = await drive.files.list({
+      q: query,
+      fields: 'files(id)',
+    });
+
+    if (existingFiles.data.files.length > 0) {
+      // A file with the same name already exists, handle this case as needed
+      throw new Error('A file with the same name already exists.');
+    }
+
+    // If no file with the same name exists, proceed with the upload
+    const bufferStream = new stream.PassThrough();
+    bufferStream.end(buffer);
+
+    const fileMetadata = {
+      name: name,
       fields: 'id',
     };
+
     const media = {
-      mimeType: 'image/jpeg',
-      body: fs.createReadStream('photo.jpg'),
+      mimeType: mimeType,
+      body: bufferStream,
     };
+
     try {
-      const file = await drive.files.create({
-        requestBody,
+      const uploadedFile = await drive.files.create({
+        requestBody: fileMetadata,
         media: media,
+        uploadType: 'multipart',
       });
-      console.log('File Id:', file.data.id);
-      return file.data.id;
+
+      console.log('File ID:', uploadedFile.data);
+      const driveid = uploadedFile.data.id;
+      const imageInfo: IUploadFile = {
+        driveid,
+        filename,
+      };
+
+      if (isCreate) {
+        return await this.imageService.storeImage(imageInfo);
+      }
+
+      return uploadedFile.data.id;
     } catch (err) {
       throw err;
     }

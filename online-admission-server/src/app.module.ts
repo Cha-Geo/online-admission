@@ -15,7 +15,6 @@ import { AuthMiddleware } from './shared/middlewares/auth.middleware';
 import { ProfileImagesModule } from './images/profile_images/profile_images.module';
 import { ProgramsImagesModule } from './images/programs_images/programs_images.module';
 import { ProgramsImage } from './images/programs_images/entities/programs_image.entity';
-import { MulterMiddleware } from './shared/middlewares/uploads.middleware';
 import { Programmes } from './programmes/entities/programmes.entity';
 
 @Module({
@@ -47,8 +46,6 @@ import { Programmes } from './programmes/entities/programmes.entity';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(cookieParser(), MulterMiddleware, AuthMiddleware)
-      .forRoutes('*');
+    consumer.apply(cookieParser(), AuthMiddleware).forRoutes('*');
   }
 }

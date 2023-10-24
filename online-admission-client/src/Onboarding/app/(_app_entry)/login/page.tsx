@@ -187,7 +187,7 @@ const Login = (props: Props) => {
         </form>
       </div>
       <div className="mx-auto">
-        <div className="glassmorphism mx-auto py-12 px-8 xxs:px-1 xss:px-2 sx:px-4 flex flex-col justify-center items-center  max-w-[24rem] -my-6">
+        <div className="glassmorphism mx-auto py-12 px-8 xxs:px-1 xss:px-2 sx:px-4 flex flex-col justify-center items-center max-w-[24rem] w-[17rem] xxs:w-[21rem] sx:w-[22rem] xs:w-[24rem] -my-6">
           <span className="w-full text-center xxs:flex xxs:justify-center xxs:items-center xxs:gap-1 xss:gap-2">
             <p className="a">New to Alpha University?</p>
             <Link href="/signup" className="text-blue-600">

@@ -5,7 +5,6 @@ import { clientFetcher, clientUploadFetcher } from "@/services/dataFetching";
 import { useSession } from "next-auth/react";
 import { AuthRequiredError } from "@/public/lib/exceptions";
 import { UseSuccessToast } from "@/public/lib/hooks/use-toast";
-import { PleaseWait } from "@/app/loading";
 
 const DownloadButton: React.FC<DownloadButtonProps> = ({
   text,
@@ -66,7 +65,8 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
       onClick={downloadFile}
     >
       {loading ? (
-        <PleaseWait className="w-5 h-5 border-neutral-50" />
+        // <PleaseWait className="w-5 h-5 border-neutral-50" />
+      null
       ) : (
         <>
           <IconDownload className="w-6 h-6 mr-2" /> {text}

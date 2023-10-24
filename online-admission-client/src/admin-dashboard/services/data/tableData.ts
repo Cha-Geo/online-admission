@@ -1,0 +1,67 @@
+export const tableData: ITableRowData[] = [
+  {
+    imageSrc: "/assets/img/bootstrap.jpg",
+    projectName: "Argon Design System",
+    budget: "$2,500 USD",
+    status: { color: "orange-500", text: "pending" },
+    users: [
+      { imageSrc: "/assets/img/team-1-800x800.jpg" },
+      { imageSrc: "/assets/img/team-2-800x800.jpg" },
+      { imageSrc: "/assets/img/team-3-800x800.jpg" },
+      { imageSrc: "/assets/img/team-4-470x470.png" },
+    ],
+    completion: { percent: "60%" },
+  },
+  {
+    imageSrc: "/assets/img/angular.jpg",
+    projectName: "Angular Now UI Kit PRO",
+    budget: "$1,800 USD",
+    status: { color: "emerald-500", text: "completed" },
+    users: [
+      { imageSrc: "/assets/img/team-1-800x800.jpg" },
+      { imageSrc: "/assets/img/team-2-800x800.jpg" },
+      { imageSrc: "/assets/img/team-3-800x800.jpg" },
+      { imageSrc: "/assets/img/team-4-470x470.png" },
+    ],
+    completion: { percent: "100%" },
+  },
+  {
+    imageSrc: "/assets/img/sketch.jpg",
+    projectName: "Black Dashboard Sketch",
+    budget: "$3,150 USD",
+    status: { color: "red-500", text: "delayed" },
+    users: [
+      { imageSrc: "/assets/img/team-1-800x800.jpg" },
+      { imageSrc: "/assets/img/team-2-800x800.jpg" },
+      { imageSrc: "/assets/img/team-3-800x800.jpg" },
+      { imageSrc: "/assets/img/team-4-470x470.png" },
+    ],
+    completion: { percent: "73%" },
+  },
+  {
+    imageSrc: "/assets/img/react.jpg",
+    projectName: "React Material Dashboard",
+    budget: "$4,400 USD",
+    status: { color: "teal-500", text: "on schedule" },
+    users: [
+      { imageSrc: "/assets/img/team-1-800x800.jpg" },
+      { imageSrc: "/assets/img/team-2-800x800.jpg" },
+      { imageSrc: "/assets/img/team-3-800x800.jpg" },
+      { imageSrc: "/assets/img/team-4-470x470.png" },
+    ],
+    completion: { percent: "90%" },
+  },
+  {
+    imageSrc: "/assets/img/vue.jpg",
+    projectName: "React Material Dashboard",
+    budget: "$2,200 USD",
+    status: { color: "emerald-500", text: "completed" },
+    users: [
+      { imageSrc: "/assets/img/team-1-800x800.jpg" },
+      { imageSrc: "/assets/img/team-2-800x800.jpg" },
+      { imageSrc: "/assets/img/team-3-800x800.jpg" },
+      { imageSrc: "/assets/img/team-4-470x470.png" },
+    ],
+    completion: { percent: "100%" },
+  },
+];

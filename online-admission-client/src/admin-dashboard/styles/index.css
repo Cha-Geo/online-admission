@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+@layer components {
+  .light {
+    --btn_color_bg_primary: #007bff;
+    --btn_color_bg_secondary: #6c757d;
+    --btn_color_bg_destructive: #dc3545;
+    --btn_color_bg_outline: white;
+    --btn_color_bg_ghost: transparent;
+    --btn_color_bg_link: transparent;
+
+
+    --color-text-primary: #2d3748;
+    --hover-navbar-button-bg-primary: #007b00;
+    --hover-navbar-button-bg-primary-edited: #007b00;
+    --navbar-border-color-primary: #88b388;
+
+    --color-primary: #dc3545;
+  }
+}
+
+
+
+.glassmorphism {
+  @apply rounded-xl border border-gray-200 bg-white/20 shadow-[inset_10px_-50px_94px_0_rgb(199,199,199,0.2)] backdrop-blur p-5;
+}

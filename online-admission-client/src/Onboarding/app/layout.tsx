@@ -1,4 +1,4 @@
-import { ReactNode, Suspense } from "react";
+import { ReactNode } from "react";
 import "../styles/globals.css";
 import '../styles/organogram.css'
 import type { Metadata } from "next";
@@ -7,7 +7,6 @@ import { fontMono, fontSans } from "@/public/lib/fonts";
 import { cn } from "@/public/lib/utils";
 import Provider from "@/services/Provider";
 import { Toaster } from "react-hot-toast";
-import Loading from "./loading";
 
 export const metadata: Metadata = {
   title: "Alpha University - Admissions",

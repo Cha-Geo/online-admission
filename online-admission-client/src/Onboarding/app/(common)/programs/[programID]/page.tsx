@@ -20,7 +20,8 @@ const ProgramDetails = async ({ params }: Props) => {
   console.log(program);
   
   return (
-    <div className="py-8">
+    <Suspense fallback={<LoadingSkeleton />}>
+      <div className="py-8">
         <div className="p-8 rounded-lg ">
           <Image
             src={
@@ -48,7 +49,8 @@ const ProgramDetails = async ({ params }: Props) => {
             </p>
           </div>
         </div>
-    </div>
+      </div>
+    </Suspense>
   );
 };
 
